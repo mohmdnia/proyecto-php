@@ -1,0 +1,230 @@
+/* header principal */
+.nombre-empleado {
+    color: #2c5b0e;
+    font-size: 30px;
+    display: flex;
+    justify-content: space-around; 
+    align-items: center;
+    height: 30%;
+    margin-top: 150px;
+    gap: 20px;
+}
+
+.nombre-empleado .nombre {
+    font-size: 25px; /* Tamaño del texto del nombre */
+}
+
+.nombre-empleado .botones {
+    display: flex;
+    gap: 10px;
+    margin-left: -30em;
+}
+
+.nombre-empleado .botones a {
+    font-size: 14px;
+}
+
+
+.menu-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 80%;
+    margin: 0 auto;
+    max-width: 1000px; 
+}
+
+
+/* css para la barra de busqueda */
+.busqueda {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 80%;
+    max-width: 400px;
+    position: absolute; /* Hace que el contenedor se posicione de forma absoluta */
+    left: 20em; /* Lo coloca hacia la derecha */
+    top: 250px;
+}
+
+
+
+/* CSS de los datos personales del usuario */
+.datosPersonales {
+    background-color: #ffffff;
+    color: #333;
+    font-size: 18px;
+    border-radius: 10px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    width: 100%;
+    max-width: 900px; 
+    margin: 0 auto;
+    margin-bottom: 15px;
+}
+
+.datosPersonales h3 {
+    margin-bottom: 15px;
+    font-size: 27px;
+    color: #2c5b0e;
+    text-align: center;
+}
+
+.datosPersonales dl {
+    display: grid;
+    grid-template-columns: auto 2fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.datosPersonales dl dt {
+    font-weight: bold;
+    color: #555;
+    font-size: 20px;
+}
+
+.datosPersonales dl dd {
+    margin: 0;
+    color: #444;
+    font-size: 16px;
+    padding-left: 5px;
+    font-size: 20px;
+}
+
+
+/* CSS de los datos epsevg del usuario */
+.datosEpsevg {
+    background-color: #ffffff;
+    color: #333;
+    font-size: 18px;
+    border-radius: 10px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    width: 100%;
+    max-width: 900px; 
+    margin: 0 auto;
+    margin-bottom: 15px;
+}
+
+.datosEpsevg h3 {
+    margin-bottom: 15px;
+    font-size: 27px;
+    color: #2c5b0e;
+    text-align: center;
+}
+
+.datosEpsevg dl {
+    display: grid;
+    grid-template-columns: auto 2fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.datosEpsevg dl dt {
+    font-weight: bold;
+    color: #555;
+    font-size: 20px;
+}
+
+.datosEpsevg dl dd {
+    margin: 0;
+    color: #444;
+    font-size: 16px;
+    padding-left: 5px;
+    font-size: 20px;
+}
+
+
+
+/* CSS de los grupos epsevg del usuario */
+.grupoEpsevg {
+    background-color: #ffffff;
+    color: #333;
+    font-size: 18px;
+    border-radius: 10px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    width: 100%;
+    max-width: 900px; 
+    margin: 0 auto;
+    margin-bottom: 15px;
+}
+
+.grupoEpsevg h3 {
+    margin-bottom: 15px;
+    font-size: 27px;
+    color: #2c5b0e;
+    text-align: center;
+}
+
+.grupoEpsevg dl {
+    display: grid;
+    grid-template-columns: auto 2fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.grupoEpsevg dl dt {
+    font-weight: bold;
+    color: #555;
+    font-size: 20px;
+}
+
+.grupoEpsevg dl dd {
+    margin: 0;
+    color: #444;
+    font-size: 16px;
+    padding-left: 5px;
+    font-size: 20px;
+}
+
+
+/* CSS de los usuarios relacionados */
+.usuariosRel {
+    background-color: #ffffff;
+    color: #333;
+    font-size: 18px;
+    border-radius: 10px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    width: 100%;
+    max-width: 900px; 
+    margin: 0 auto;
+    margin-bottom: 15px;
+}
+
+.usuariosRel h3 {
+    margin-bottom: 15px;
+    font-size: 27px;
+    color: #2c5b0e;
+    text-align: center;
+}
+
+.usuariosRel ul {
+    display: grid;
+    grid-template-columns: auto 2fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.usuariosRel ul li {
+    font-weight: bold;
+    color: #555;
+    font-size: 20px;
+}
+
+.usuariosRel ul li {
+    margin: 0;
+    color: #444;
+    font-size: 16px;
+    padding-left: 5px;
+    font-size: 20px;
+}
