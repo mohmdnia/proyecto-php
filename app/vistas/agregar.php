@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- Formulario de agregar datos personales empleado -->
         <div class="col-md-6 mb-4">
             <div class="card bg-light p-3">
-                <h3>Agregar Empleado</h3>
+                <h4>Agregar Empleado</h3>
                 <form method="POST" action="agregar.php">
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre</label>
@@ -127,7 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- Formulario de agregar datos EPSEVG -->
         <div class="col-md-6 mb-4">
             <div class="card bg-light p-3">
-                <h3>Agregar Datos EPSEVG</h3>
+                <h4>Agregar Datos EPSEVG</h3>
                 <form method="POST" action="agregar.php">
                     <div class="mb-3">
                         <label for="cip" class="form-label">CIP</label>

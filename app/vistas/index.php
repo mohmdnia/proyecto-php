@@ -10,7 +10,7 @@ if (!$conn) {
 // Consulta por defecto
 $sql = "SELECT * FROM 340_personal";
 if (isset($_POST['buscar'])) {
-    $buscar = $_POST['buscar'];
+    $buscar = mysqli_real_escape_string($conn, $_POST['buscar']); // Seguridad adicional para evitar SQL Injection
     $sql = "SELECT * FROM 340_personal WHERE nombre LIKE '%$buscar%'";
 }
 $query = mysqli_query($conn, $sql);
@@ -26,126 +26,95 @@ $query = mysqli_query($conn, $sql);
 <?php session_unset(); } ?>
 
 <!-- Código HTML -->
+<body>
 
-<!-- Barra de búsqueda -->
-<div class="busqueda">
-    <nav class="d-flex justify-content-start mb-4">
-        <form class="d-flex align-items-center" action="index.php" method="POST">
-            <input type="text" class="form-control me-2" id="buscar" name="buscar" 
-                value="<?php echo isset($_POST['buscar']) ? $_POST['buscar'] : ''; ?>" 
-                placeholder="Buscar usuario..." style="width: 200px;">
-            <input type="submit" class="btn btn-success ms-3" value="Ver">
-        </form>
-    </nav>
-</div>
+    <div class="layout">
 
-<!-- Nombre del empleado -->
-<div class="nombre-empleado">
-    <?php while ($row = mysqli_fetch_assoc($query)) { ?>
-        <span class="nombre">
-            <strong><?php echo $row['nombre'] . " " . $row['apellido']; ?></strong>
-        </span>
-
-        <!-- Botones de CUD -->
-        <div class="botones">
-            <a href="agregar.php" class="btn btn-success"><i class="bi bi-person-add"></i></a>
-            <a href="editar.php?id=<?= $row['id']; ?>" class="btn btn-secondary">
-                <i class="bi bi-person-fill-gear"></i>
-            </a>
-            <a href="eliminar.php?id=<?= $row['id']; ?>" class="btn btn-danger">
-                <i class="bi bi-person-dash-fill"></i>
-            </a>
+        <!-- barra de busqueda -->
+        <div class="busqueda">
+            <form action="index.php" method="POST">
+                <input type="text" name="buscar" placeholder="Buscar usuario..." class="search-input"
+                    value="<?= isset($_POST['buscar']) ? htmlspecialchars($_POST['buscar']) : ''; ?>">
+                <button type="submit" class="search-button"><i class="fa fa-search"></i></button>
+            </form>
         </div>
-    <?php } ?>
-</div>
 
-<main class="menu-container">
-    <!-- Datos personales del empleado -->
-    <div class="datosPersonales">
-        <h3>Datos personales</h3>
-        <dl>
-            <?php
-            if (mysqli_num_rows($query) > 0) {
-                mysqli_data_seek($query, 0); // Reiniciar el cursor
-                while ($row = mysqli_fetch_assoc($query)) {
-                    echo "<dt>Nombre: </dt><dd>" . $row['nombre'] . "</dd>";
-                    echo "<dt>Apellidos: </dt><dd>" . $row['apellido'] . "</dd>";
-                    echo "<dt>Codigo Postal: </dt><dd>" . $row['codigo_postal'] . "</dd>";
-                    echo "<dt>Telefono: </dt><dd>" . $row['telefono'] . "</dd>";
-                    echo "<dt>Fecha de nacimiento: </dt><dd>" . $row['fecha_nacimiento'] . "</dd>";
-                    echo "<dt>DNI/NIE: </dt><dd>" . $row['dni_nie'] . "</dd>";
-                    echo "<dt>Población: </dt><dd>" . $row['poblacion'] . "</dd>";
-                    echo "<dt>Sexo: </dt><dd>" . $row['sexo'] . "</dd>";
-                }
-            } else {
-                echo "<p>No se ha encontrado ningún registro.</p>";
-            }
-            ?>
-        </dl>
+        <div class="contenedor">
+            <!-- Nombre del perfil -->
+                
+            <div class="nombre">
+                <?php while ($row = mysqli_fetch_assoc($query)) { ?>
+                    <h2>
+                        <strong><?php echo htmlspecialchars($row['nombre']) . " " . htmlspecialchars($row['apellido']); ?></strong>
+                    </h2>
+                    <!-- Botones de CUD -->
+                    <div class="botones">
+                        <a href="agregar.php" class="btn btn-success"><i class="bi bi-person-add"></i></a>
+                        <a href="editar.php?id=<?= $row['id']; ?>" class="btn btn-secondary">
+                            <i class="bi bi-person-fill-gear"></i>
+                        </a>
+                        <a href="eliminar.php?id=<?= $row['id']; ?>" class="btn btn-danger">
+                            <i class="bi bi-person-dash-fill"></i>
+                        </a>
+                    </div>
+                <?php } ?>
+            </div>
+
+            <!-- Datos personales -->
+            <div class="section">
+                <h2>Datos personales</h2>
+                <ul class="columnas">
+                    <li><strong>Nombre: </strong> *** </li>
+                    <li><strong>Apellidos: </strong> *** </li>
+                    <li><strong>DNI/NIE: </strong> *** </li>
+                    <li><strong>Dirección postal: </strong> *** </li>
+                    <li><strong>Población: </strong> *** </li>
+                    <li><strong>Teléfono movil: </strong> *** </li>
+                    <li><strong>Teléfono: </strong> *** </li>
+                    <li><strong>Sexo: </strong> *** </li>
+                </ul>
+            </div>
+
+            <!-- Datos EPSEVG -->
+            <div class="section">
+                <h2>Datos EPSEVG</h2>
+                <ul class="columnas">
+                    <li><strong>CIP: </strong> *** </li>
+                    <li><strong>Teléfono 1: </strong> *** </li>
+                    <li><strong>Número de expediente: </strong> *** </li>
+                    <li><strong>Categoría: </strong> *** </li>
+                    <li><strong>Dedicación: </strong> *** </li>
+                    <li><strong>Departamento: </strong> *** </li>
+                    <li><strong>Tarea: </strong> *** </li>
+                    <li><strong>Email: </strong> *** </li>
+                    <li><strong>Teléfono 2: </strong> *** </li>
+                    <li><strong>Unidad estructural: </strong> *** </li>
+                    <li><strong>Tipo asociado: </strong> *** </li>
+                    <li><strong>Titulación: </strong> *** </li>
+                    <li><strong>Despacho: </strong> *** </li>
+                    <li><strong>Perfil: </strong> *** </li>
+                </ul>
+            </div>
+
+            <!-- Grupos de usuario -->
+            <div class="section">
+                <h2>Grupos EPSEVG</h2>
+                <ul>
+                    <li>Éste usuario no tiene grupos.</li>
+                </ul>
+            </div>
+
+            <!-- Usuarios relacionados -->
+            <div class="section">
+                <h2>Usuarios relacionados</h2>
+                <ul>
+                    <li>Éste usuario no tiene usuarios relacionados por grupo.</li>
+                </ul>
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- Datos Epsevg -->
-    <div class="datosEpsevg">
-        <h3>Datos EPSEVG</h3>
-        <dl>
-            <?php
-            if (mysqli_num_rows($query) > 0) {
-                mysqli_data_seek($query, 0);
-                while ($row = mysqli_fetch_assoc($query)) {
-                    echo "<dt>CIP: </dt><dd>" . $row['cip'] . "</dd>";
-                    echo "<dt>Teléfono 1: </dt><dd>" . $row['telefono_1'] . "</dd>";
-                    echo "<dt>Número de expediente: </dt><dd>" . $row['num_expediente'] . "</dd>";
-                    echo "<dt>Categoría: </dt><dd>" . $row['categoria'] . "</dd>";
-                    echo "<dt>Dedicacion: </dt><dd>" . $row['dedicacion'] . "</dd>";
-                    echo "<dt>Departamento: </dt><dd>" . $row['departamento'] . "</dd>";
-                    echo "<dt>Tarea: </dt><dd>" . $row['tarea'] . "</dd>";
-                    echo "<dt>Email: </dt><dd>" . $row['email'] . "</dd>";
-                    echo "<dt>Teléfono 2: </dt><dd>" . $row['telefono_2'] . "</dd>";
-                    echo "<dt>Unidad estructural: </dt><dd>" . $row['unidad_estructural'] . "</dd>";
-                    echo "<dt>Tipo asociado: </dt><dd>" . $row['tipo_asociado'] . "</dd>";
-                    echo "<dt>Titulación: </dt><dd>" . $row['titulacion'] . "</dd>";
-                    echo "<dt>Despacho: </dt><dd>" . $row['despacho'] . "</dd>";
-                    echo "<dt>Perfil: </dt><dd>" . $row['perfil'] . "</dd>";
-                }
-            } else {
-                echo "<p>No se ha encontrado ningún registro.</p>";
-            }
-            ?>
-        </dl>
-    </div>
-
-    <!-- Grupos EPSEVG -->
-    <div class="grupoEpsevg">
-        <h3>Grupos EPSEVG</h3>
-        <dl>
-            <?php
-            if (mysqli_num_rows($query) > 0) {
-                mysqli_data_seek($query, 0);
-                while ($row = mysqli_fetch_assoc($query)) {
-                    echo "<dt>Nombre grupo: </dt><dd>" . $row['grupo_epsevg'] . "</dd>";
-                }
-            } else {
-                echo "<p>Éste usuario no tiene grupos.</p>";
-            }
-            ?>
-        </dl>
-    </div>
-
-    <!-- Usuarios relacionados -->
-    <div class="usuariosRel">
-        <h3>Usuarios relacionados</h3>
-        <ul>
-            <?php
-            if (mysqli_num_rows($query) > 0) {
-                mysqli_data_seek($query, 0);
-                echo "<h5>Hay <strong>N</strong> usuarios relacionados por <strong>departamento</strong></h5><br>";
-                while ($row = mysqli_fetch_assoc($query)) {
-                    echo "<li>Grupo, Apellido, Nombre</li>";
-                }
-            } else {
-                echo "<p>No hay usuarios relacionados.</p>";
-            }
-            ?>
-        </ul>
-    </div>
-</main>
+</body>
+</html>
