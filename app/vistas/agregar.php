@@ -16,52 +16,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sexo = isset($_POST['sexo']) ? $_POST['sexo'] : '';
 
     // Insertar los datos
-    $sql = "INSERT INTO datos_personales (nombre, apellido, codigo_postal, telefono, fecha_nacimiento, dni_nie, poblacion, sexo)
+    $sql = "INSERT INTO 340_personal (nombre, apellido, codigo_postal, telefono, fecha_nacimiento, dni_nie, poblacion, sexo)
             VALUES ('$nombre', '$apellido', '$codigo_postal', '$telefono', '$fecha_nacimiento', '$dni_nie', '$poblacion', '$sexo')";
 
+
     if (mysqli_query($conn, $sql)) {
-        $_SESSION['message'] = 'Datos personales agregados con éxito';
+        // Mensaje de exito
+        $_SESSION['message'] = 'Datos personales agregados con éxito.';
         $_SESSION['message_type'] = 'success';
-        header('Location: index.php');
+
+        // Redirección al index
+        header('Location: agregar.php');
         exit;
+
     } else {
-        echo "Error: " . mysqli_error($conn);
-    }
+        // Mensaje de error
+        error_log("Error al ejecutar la consulta SQL: " . mysqli_error($conn));
+
+        $_SESSION['message'] = 'Ocurrió un error al agregar los datos. Por favor, inténtalo de nuevo.';
+        $_SESSION['message_type'] = 'danger';
+
+        header('Location: agregar.php');
+        exit;
+}
 }
 
 
 // Verificar envio formulario epsevg
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $cip = isset($_POST['cip']) ? $_POST['cip'] : '';
-    $telefono_1 = isset($_POST['telefono_1']) ? $_POST['telefono_1'] : '';
-    $num_expediente = isset($_POST['num_expediente']) ? $_POST['num_expediente'] : '';
-    $categoria = isset($_POST['categoria']) ? $_POST['categoria'] : '';
-    $dedicacion = isset($_POST['dedicacion']) ? $_POST['dedicacion'] : '';
-    $departamento = isset($_POST['departamento']) ? $_POST['departamento'] : '';
-    $tarea = isset($_POST['tarea']) ? $_POST['tarea'] : '';
-    $email = isset($_POST['email']) ? $_POST['email'] : '';
-    $telefono_2 = isset($_POST['telefono_2']) ? $_POST['telefono_2'] : '';
-    $unidad_estructural = isset($_POST['unidad_estructural']) ? $_POST['unidad_estructural'] : '';
-    $tipo_asociado = isset($_POST['tipo_asociado']) ? $_POST['tipo_asociado'] : '';
-    $titulacion = isset($_POST['titulacion']) ? $_POST['titulacion'] : '';
-    $despacho = isset($_POST['despacho']) ? $_POST['despacho'] : '';
-    $perfil = isset($_POST['perfil']) ? $_POST['perfil'] : '';
+// if ($_SERVER["REQUEST_METHOD"] == "POST") {
+//     $cip = isset($_POST['cip']) ? $_POST['cip'] : '';
+//     $telefono_1 = isset($_POST['telefono_1']) ? $_POST['telefono_1'] : '';
+//     $num_expediente = isset($_POST['num_expediente']) ? $_POST['num_expediente'] : '';
+//     $categoria = isset($_POST['categoria']) ? $_POST['categoria'] : '';
+//     $dedicacion = isset($_POST['dedicacion']) ? $_POST['dedicacion'] : '';
+//     $departamento = isset($_POST['departamento']) ? $_POST['departamento'] : '';
+//     $tarea = isset($_POST['tarea']) ? $_POST['tarea'] : '';
+//     $email = isset($_POST['email']) ? $_POST['email'] : '';
+//     $telefono_2 = isset($_POST['telefono_2']) ? $_POST['telefono_2'] : '';
+//     $unidad_estructural = isset($_POST['unidad_estructural']) ? $_POST['unidad_estructural'] : '';
+//     $tipo_asociado = isset($_POST['tipo_asociado']) ? $_POST['tipo_asociado'] : '';
+//     $titulacion = isset($_POST['titulacion']) ? $_POST['titulacion'] : '';
+//     $despacho = isset($_POST['despacho']) ? $_POST['despacho'] : '';
+//     $perfil = isset($_POST['perfil']) ? $_POST['perfil'] : '';
 
-    // Insertar los datos en la base de datos
-    $sql = "INSERT INTO 340_personales_epsevg (cip, telefono_1, num_expediente, categoria, dedicacion, departamento, tarea, email,
-                telefono_2, unidad_estructural, tipo_asociado, titulacion, despacho, perfil)
-            VALUES ('$cip', '$telefono_1', '$num_expediente', '$categoria', '$dedicacion', '$departamento', '$tarea', '$email', '$telefono_2', 
-                    '$unidad_estructural', '$tipo_asociado', '$titulacion', '$despacho', '$perfil')";
+//     // Insertar los datos en la base de datos
+//     $sql = "INSERT INTO 340_personales_epsevg (cip, telefono_1, num_expediente, categoria, dedicacion, departamento, tarea, email,
+//                 telefono_2, unidad_estructural, tipo_asociado, titulacion, despacho, perfil)
+//             VALUES ('$cip', '$telefono_1', '$num_expediente', '$categoria', '$dedicacion', '$departamento', '$tarea', '$email', '$telefono_2', 
+//                     '$unidad_estructural', '$tipo_asociado', '$titulacion', '$despacho', '$perfil')";
 
-    if (mysqli_query($conn, $sql)) {
-        $_SESSION['message'] = 'Datos EPSEVG agregados con exito';
-        $_SESSION['message_type'] = 'success';
-        header('Location: index.php');
-        exit;
-    } else {
-        echo "Error: " . mysqli_error($conn);
-    }
-}
+//     if (mysqli_query($conn, $sql)) {
+//         $_SESSION['message'] = 'Datos EPSEVG agregados con exito';
+//         $_SESSION['message_type'] = 'success';
+//         header('Location: index.php');
+//         exit;
+//     } else {
+//         echo "Error: " . mysqli_error($conn);
+//     }
+// }
 
 ?>
 

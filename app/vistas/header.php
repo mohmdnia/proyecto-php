@@ -1,3 +1,18 @@
+<?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+include_once "../modelo/database.php";
+$usuario = "Invitado";
+
+if (isset($_SESSION['usuario'])) {
+    $usuario = htmlspecialchars($_SESSION['usuario']);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,7 +30,7 @@
         <div class="container">
             <img src="/proyecto-empleados/assets/img/logo-epsevg.png" alt="logo epsevg" style="width:200px;">
             <a href="index.php" class="navbar-brand">Portal Empleados UPC - EPSEVG</a>
-            <h3 class="navbar-brand">Hola, $usuario</h3>
+            <h3 class="navbar-brand">Hola, <?= $usuario ?></h3>
         </div>
     </nav>
 
