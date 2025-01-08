@@ -8,7 +8,7 @@ if (!$conn) {
 }
 
 // Consulta para obtener el último empleado
-$sql = "SELECT * FROM 340_personal ORDER BY id DESC LIMIT 1";
+$sql = "SELECT * FROM 340_personal ORDER BY cognoms ASC LIMIT 1";
 $query = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($query); // Obtener el primer registro (último empleado)
 
@@ -16,7 +16,7 @@ $row = mysqli_fetch_assoc($query); // Obtener el primer registro (último emplea
 $sql = "SELECT * FROM 340_personal";
 if (isset($_POST['buscar'])) {
     $buscar = mysqli_real_escape_string($conn, $_POST['buscar']); // Seguridad adicional para evitar SQL Injection
-    $sql = "SELECT * FROM 340_personal WHERE nombre LIKE '%$buscar%'";
+    $sql = "SELECT * FROM 340_personal WHERE nom LIKE '%$buscar%' AND cognoms LIKE '%cognoms%'";
 }
 $query = mysqli_query($conn, $sql);
 
@@ -25,7 +25,7 @@ if (isset($_SESSION['message'])): ?>
     <div class="alert alert-<?= htmlspecialchars($_SESSION['message_type']); ?> alert-dismissible fade show" role="alert" id="auto-close-alert">
         <?= htmlspecialchars($_SESSION['message']); ?>
     </div>
-    <?php unset($_SESSION['message']); // Solo elimina el mensaje ?>
+    <?php unset($_SESSION['message']); ?>
 <?php endif; ?>
 
 <!-- Código HTML -->
@@ -34,12 +34,11 @@ if (isset($_SESSION['message'])): ?>
     <div class="layout">
 
         <!-- Barra de búsqueda -->
-
         <div class="busqueda">
             <form action="index.php" method="POST">
                 <div class="input-group mb-1">
                     <select class="form-select" style="max-width: 150px;">
-                        <option selected>Grupos</option>
+                        <option selected>Perfiles</option>
                         <option value="1">PDI</option>
                         <option value="2">PTGAS</option>
                         <option value="3">EST</option>
@@ -60,7 +59,7 @@ if (isset($_SESSION['message'])): ?>
                     <?php if (mysqli_num_rows($query) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($query)): ?>
                             <h2>
-                                <strong><?php echo htmlspecialchars($row['nombre']) . " " . htmlspecialchars($row['apellido']); ?></strong>
+                                <strong><?php echo htmlspecialchars($row['nom']) . " " . htmlspecialchars($row['cognoms']); ?></strong>
                             </h2>
 
                             <!-- Botones de CUD -->
@@ -72,7 +71,7 @@ if (isset($_SESSION['message'])): ?>
 
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <p>No se han encontrado resultados para la búsqueda.</p>
+                        <p>No se han encontrado ningún usuario.</p>
                         <!-- Botones de CUD -->
                         <div class="botones ms-auto">
                             <a href="agregar.php" class="btn btn-success"><i class="bi bi-person-add"></i></a>
@@ -86,11 +85,13 @@ if (isset($_SESSION['message'])): ?>
                 <?php if ($row): ?>
                     <div class="nombre">
                         <h2>
-                            <strong><?php echo htmlspecialchars($row['nombre']) . " " . htmlspecialchars($row['apellido']); ?></strong>
+                            <strong><?php echo htmlspecialchars($row['nom']) . " " . htmlspecialchars($row['cognoms']); ?></strong>
                         </h2>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
+
+
 
             <!-- Datos personales -->
             <div class="section">
@@ -101,19 +102,21 @@ if (isset($_SESSION['message'])): ?>
                     $row = mysqli_fetch_assoc($query);
                 ?>
                     <ul class="columnas">
-                        <li><strong>Nombre: </strong><?= htmlspecialchars($row['nombre']); ?></li>
-                        <li><strong>Apellidos: </strong><?= htmlspecialchars($row['apellido']); ?></li>
-                        <li><strong>Código postal: </strong><?= htmlspecialchars($row['codigo_postal']); ?></li>
-                        <li><strong>Teléfono móvil: </strong><?= htmlspecialchars($row['telefono']); ?></li>
-                        <li><strong>Fecha de nacimiento: </strong><?= htmlspecialchars($row['fecha_nacimiento']); ?></li>
-                        <li><strong>DNI/NIE: </strong><?= htmlspecialchars($row['dni_nie']); ?></li>
-                        <li><strong>Población: </strong><?= htmlspecialchars($row['poblacion']); ?></li>
-                        <li><strong>Sexo: </strong><?= htmlspecialchars($row['sexo']); ?></li>
+                        <li><strong>Nombre: </strong><?= htmlspecialchars($row['nom']); ?></li>
+                        <li><strong>cognomss: </strong><?= htmlspecialchars($row['cognoms']); ?></li>
+                        <li><strong>Código postal: </strong><?= htmlspecialchars($row['cp']); ?></li>
+                        <li><strong>Teléfono: </strong><?= htmlspecialchars($row['telefon']); ?></li>
+                        <li><strong>Teléfono móvil: </strong><?= htmlspecialchars($row['telf_movil']); ?></li>
+                        <li><strong>Fecha de nacimiento: </strong><?= htmlspecialchars($row['data_naixement']); ?></li>
+                        <li><strong>DNI/NIE: </strong><?= htmlspecialchars($row['dni']); ?><?= htmlspecialchars($row['dni_lletra']); ?></li>
+                        <li><strong>Población: </strong><?= htmlspecialchars($row['domicili']); ?></li>
+                        <li><strong>Sexo: </strong><?= htmlspecialchars($row['sexe']); ?></li>
                     </ul>
                 <?php } else { ?>
                     <p>No se han encontrado datos personales.</p>
                 <?php } ?>
-            </div>
+            </div
+
 
             <!-- Datos EPSEVG -->
             <div class="section">
@@ -125,40 +128,71 @@ if (isset($_SESSION['message'])): ?>
                     $row = mysqli_fetch_assoc($query);
                 ?>
                     <ul class="columnas">
-                        <li><strong>CIP: </strong> *** </li>
-                        <li><strong>Teléfono 1: </strong> *** </li>
-                        <li><strong>Número de expediente: </strong> *** </li>
-                        <li><strong>Categoría: </strong> *** </li>
-                        <li><strong>Dedicación: </strong> *** </li>
-                        <li><strong>Departamento: </strong> *** </li>
-                        <li><strong>Tarea: </strong> *** </li>
-                        <li><strong>Email: </strong> *** </li>
-                        <li><strong>Teléfono 2: </strong> *** </li>
-                        <li><strong>Unidad estructural: </strong> *** </li>
-                        <li><strong>Tipo asociado: </strong> *** </li>
-                        <li><strong>Titulación: </strong> *** </li>
-                        <li><strong>Despacho: </strong> *** </li>
-                        <li><strong>Perfil: </strong> *** </li>
+                        <li><strong>CIP: </strong><?= htmlspecialchars($row['cip']); ?></li>
+                        <li><strong>Teléfono 1: </strong><?= htmlspecialchars($row['telf1']); ?></li>
+                        <li><strong>Número de expediente: </strong><?= htmlspecialchars($row['numero_expedient']); ?></li>
+                        <li><strong>Categoría: </strong><?= htmlspecialchars($row['categoria']); ?></li>
+                        <li><strong>Dedicación: </strong><?= htmlspecialchars($row['dedicacio']); ?></li>
+                        <li><strong>Departamento: </strong><?= htmlspecialchars($row['departament']); ?></li>
+                        <li><strong>Tarea: </strong><?= htmlspecialchars($row['tasca']); ?></li>
+                        <li><strong>Email: </strong><?= htmlspecialchars($row['email']); ?></li>
+                        <li><strong>Teléfono 2: </strong><?= htmlspecialchars($row['telf2']); ?></li>
+                        <li><strong>Unidad estructural: </strong><?= htmlspecialchars($row['unitat_estructural']); ?></li>
+                        <li><strong>Tipo asociado: </strong><?= htmlspecialchars($row['tipus_associat']); ?></li>
+                        <li><strong>Titulación: </strong><?= htmlspecialchars($row['titulacio']); ?></li>
+                        <li><strong>Despacho: </strong><?= htmlspecialchars($row['despatx']); ?></li>
+                        <li><strong>Perfil: </strong><?= htmlspecialchars($row['perfil']); ?></li>
                     </ul>
                 </div>
                 <?php } else { ?>
                     <p>No se han encontrado datos epsevg.</p>
                 <?php } ?>
 
+
+                
+
+
+
             <!-- Grupos de usuario -->
             <div class="section">
                 <h2>Grupos EPSEVG</h2>
-                <ul>
-                    <li>Éste usuario no tiene grupos.</li>
-                </ul>
+
+                <?php
+                if (mysqli_num_rows($query) > 0) {
+                    mysqli_data_seek($query, 0);
+                    $row = mysqli_fetch_assoc($query);
+                
+                ?>
+                    <ul class="columnas">
+                        <li><strong>No hay registro</strong></li>
+                    </ul>
+
+                <?php } else { ?>
+                    <p>No hay registro de ningun grupo epsevg.</p>
+                <?php } ?>
+
             </div>
+
+
 
             <!-- Usuarios relacionados -->
             <div class="section">
                 <h2>Usuarios relacionados</h2>
-                <ul>
-                    <li>Éste usuario no tiene usuarios relacionados por grupo.</li>
-                </ul>
+
+                <?php
+                if (mysqli_num_rows($query) > 0) {
+                    mysqli_data_seek($query, 0);
+                    $row = mysqli_fetch_assoc($query);
+                ?>
+
+                    <ul class="columnas">
+                        <li>Éste usuario no tiene usuarios relacionados por grupo.</li>
+                    </ul>
+
+                <?php } else { ?>
+                    <p>No se han encontrado datos epsevg.</p>
+                <?php } ?>
+
             </div>
 
         </div>
