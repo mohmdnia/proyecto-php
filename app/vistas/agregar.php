@@ -6,23 +6,24 @@ include_once "header.php";
 
 // verificar envio formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : '';
-    $apellido = isset($_POST['apellido']) ? $_POST['apellido'] : '';
-    $codigo_postal = isset($_POST['codigo_postal']) ? $_POST['codigo_postal'] : '';
-    $telefono = isset($_POST['telefono']) ? $_POST['telefono'] : '';
-    $fecha_nacimiento = isset($_POST['fecha_nacimiento']) ? $_POST['fecha_nacimiento'] : '';
-    $dni_nie = isset($_POST['dni_nie']) ? $_POST['dni_nie'] : '';
-    $poblacion = isset($_POST['poblacion']) ? $_POST['poblacion'] : '';
-    $sexo = isset($_POST['sexo']) ? $_POST['sexo'] : '';
+    $nom = isset($_POST['nom']) ? $_POST['nom'] : '';
+    $cognoms = isset($_POST['cognoms']) ? $_POST['cognoms'] : '';
+    $cp = isset($_POST['cp']) ? $_POST['cp'] : '';
+    $telefon = isset($_POST['telefon']) ? $_POST['telefon'] : '';
+    $telf_movil = isset($_POST['telf_movil']) ? $_POST['telf_movil'] : '';
+    $data_naixement = isset($_POST['data_naixement']) ? $_POST['data_naixement'] : '';
+    $dni = isset($_POST['dni']) ? $_POST['dni'] : '';
+    $poblacio = isset($_POST['poblacio']) ? $_POST['poblacio'] : '';
+    $sexe = isset($_POST['sexe']) ? $_POST['sexe'] : '';
 
     // Insertar los datos
-    $sql = "INSERT INTO 340_personal (nombre, apellido, codigo_postal, telefono, fecha_nacimiento, dni_nie, poblacion, sexo)
-            VALUES ('$nombre', '$apellido', '$codigo_postal', '$telefono', '$fecha_nacimiento', '$dni_nie', '$poblacion', '$sexo')";
+            $sql = "INSERT INTO 340_personal (nom, cognoms, cp, telefon, telf_movil, data_naixement, dni, poblacio, sexe)
+            VALUES ('$nom', '$cognoms', '$cp', '$telefon', '$telf_movil', '$data_naixement', '$dni', '$poblacio', '$sexe')";
 
 
     if (mysqli_query($conn, $sql)) {
         // Mensaje de exito
-        $_SESSION['message'] = 'Datos personales agregados con éxito.';
+        $_SESSION['message'] = 'Dades personals afegides amb éxit.';
         $_SESSION['message_type'] = 'success';
 
         // Redirección al index
@@ -31,9 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else {
         // Mensaje de error
-        error_log("Error al ejecutar la consulta SQL: " . mysqli_error($conn));
+        error_log("Error al executar la consulta SQL: " . mysqli_error($conn));
 
-        $_SESSION['message'] = 'Ocurrió un error al agregar los datos. Por favor, inténtalo de nuevo.';
+        $_SESSION['message'] = 'Sha produït un error en afegir les dades. Si us plau, torna-ho a intentar.';
         $_SESSION['message_type'] = 'danger';
 
         header('Location: agregar.php');
@@ -86,52 +87,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- Formulario de agregar datos personales empleado -->
         <div class="col-md-6 mb-4">
             <div class="card bg-light p-3">
-                <h4>Agregar Empleado</h3>
+                <h4>Afegir Empleat</h3>
                 <form method="POST" action="agregar.php">
                     <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" name="nombre" id="nombre" required>
+                        <label for="nom" class="form-label">Nom</label>
+                        <input type="text" class="form-control" name="nom" id="nom" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="apellido" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" name="apellido" id="apellido" required>
+                        <label for="cognoms" class="form-label">Cognoms</label>
+                        <input type="text" class="form-control" name="cognoms" id="cognoms" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="codigo_postal" class="form-label">Codigo Postal</label>
-                        <input type="text" class="form-control" name="codigo_postal" id="codigo_postal" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="telefono" class="form-label">Telefono</label>
-                        <input type="text" class="form-control" name="telefono" id="telefono" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
-                        <input type="date" class="form-control" name="fecha_nacimiento" id="fecha_nacimiento" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="dni_nie" class="form-label">DNI/NIE</label>
-                        <input type="text" class="form-control" name="dni_nie" id="dni_nie" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="poblacion" class="form-label">Poblacion</label>
-                        <input type="text" class="form-control" name="poblacion" id="poblacion" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="sexo" class="form-label">Sexo</label>
+                        <label for="sexo" class="form-label">Sexe</label>
                         <select class="form-control" name="sexo" id="sexo" required>
                             <option value="M">Masculino</option>
                             <option value="F">Femenino</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Agregar Empleado</button>
+                    <div class="mb-3">
+                        <label for="poblacion" class="form-label">Domicili</label>
+                        <input type="text" class="form-control" name="poblacion" id="poblacion" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="cp" class="form-label">Codi Postal</label>
+                        <input type="text" class="form-control" name="cp" id="cp" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telefon" class="form-label">Telefon</label>
+                        <input type="text" class="form-control" name="telefon" id="telefon" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telf_movil" class="form-label">Telefon Movil</label>
+                        <input type="text" class="form-control" name="telf_movil" id="telf_movil" required>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="data_naixement" class="form-label">Data de Naixement</label>
+                        <input type="date" class="form-control" name="data_naixement" id="data_naixement" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dni" class="form-label">DNI/NIE</label>
+                        <input type="text" class="form-control" name="dni" id="dni" required>
+                    </div>
+        
+                    <button type="submit" class="btn btn-primary">Afegir Empleat</button>
                 </form>
             </div>
         </div>
@@ -139,7 +146,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- Formulario de agregar datos EPSEVG -->
         <div class="col-md-6 mb-4">
             <div class="card bg-light p-3">
-                <h4>Agregar Datos EPSEVG</h3>
+                <h4>Afegir Dades EPSEVG</h3>
+                
                 <form method="POST" action="agregar.php">
                     <div class="mb-3">
                         <label for="cip" class="form-label">CIP</label>
@@ -147,33 +155,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
 
                     <div class="mb-3">
-                        <label for="telefono_1" class="form-label">Telefono 1</label>
-                        <input type="text" class="form-control" name="telefono_1" id="telefono_1" required>
+                        <label for="telf1" class="form-label">Telefon 1</label>
+                        <input type="text" class="form-control" name="telf1" id="telf1" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="num_expediente" class="form-label">Número de expediente</label>
-                        <input type="text" class="form-control" name="num_expediente" id="num_expediente" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="categoria" class="form-label">Categoría</label>
-                        <input type="text" class="form-control" name="categoria" id="categoria" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="dedicacion" class="form-label">Dedicación</label>
-                        <input type="text" class="form-control" name="dedicacion" id="dedicacion" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="departamento" class="form-label">Departamento</label>
-                        <input type="text" class="form-control" name="departamento" id="departamento" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="tarea" class="form-label">Tarea</label>
-                        <input type="text" class="form-control" name="tarea" id="tarea" required>
+                        <label for="telf2" class="form-label">Telefon 2</label>
+                        <input type="text" class="form-control" name="telf2" id="telf2" required>
                     </div>
 
                     <div class="mb-3">
@@ -182,28 +170,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
 
                     <div class="mb-3">
-                        <label for="telefono_2" class="form-label">Teléfono 2</label>
-                        <input type="text" class="form-control" name="telefono_2" id="telefono_2" required>
+                        <label for="numero_expedient" class="form-label">Número de expedient</label>
+                        <input type="text" class="form-control" name="numero_expedient" id="numero_expedient" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="unidad_estructural" class="form-label">Unidad estructural</label>
-                        <input type="text" class="form-control" name="unidad_estructural" id="unidad_estructural" required>
+                        <label for="unitat_estructural" class="form-label">Unitat Estructural</label>
+                        <input type="text" class="form-control" name="categoria" id="categoria" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="tipo_asociado" class="form-label">Tipo asociado</label>
-                        <input type="text" class="form-control" name="tipo_asociado" id="tipo_asociado" required>
+                        <label for="categoria" class="form-label">Categoria</label>
+                        <input type="text" class="form-control" name="categoria" id="categoria" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="titulacion" class="form-label">Titulación</label>
-                        <input type="text" class="form-control" name="titulacion" id="titulacion" required>
+                        <label for="tipus_associat" class="form-label">tipus_associat</label>
+                        <input type="text" class="form-control" name="tipus_associat" id="tipus_associat" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="despacho" class="form-label">Despacho</label>
-                        <input type="text" class="form-control" name="despacho" id="despacho" required>
+                        <label for="dedicacio" class="form-label">Dedicació</label>
+                        <input type="text" class="form-control" name="dedicacio" id="dedicacio" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="titulacio" class="form-label">Titulació</label>
+                        <input type="text" class="form-control" name="titulacio" id="titulacio" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="departament" class="form-label">Departament</label>
+                        <input type="text" class="form-control" name="departament" id="departament" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tasca" class="form-label">Tasca</label>
+                        <input type="text" class="form-control" name="tasca" id="tasca" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="despatx" class="form-label">Despatx</label>
+                        <input type="text" class="form-control" name="despatx" id="despatx" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dni" class="form-label">DNI</label>
+                        <input type="text" class="form-control" name="dni" id="dni" required>
                     </div>
 
                     <div class="mb-3">
@@ -211,11 +224,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" class="form-control" name="perfil" id="perfil" required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Agregar Datos EPSEVG</button>
+                    <button type="submit" class="btn btn-primary">Afegir Dades EPSEVG</button>
 
                     <!-- Boton para volver al indice -->
                     <div class="d-inline-flex gap-1">
-                            <a href="index.php" class="btn" role="button" data-bs-toggle="button"> Volver</a>
+                        <a href="index.php" class="btn" role="button" data-bs-toggle="button">Tornar</a>
                     </div>
 
                 </form>
