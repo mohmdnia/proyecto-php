@@ -10,7 +10,6 @@ if (!$conn) {
 
 <!-- barra de busqueda -->
 <?php
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
     $busqueda = mysqli_real_escape_string($conn, trim($_POST['buscar'])); // Escapar entrada del usuario
 
