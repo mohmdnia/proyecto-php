@@ -45,8 +45,8 @@ body {
 /* Contenedor padre */
 .layout {
     display: flex;
-    align-items: flex-start; /* Alinea los elementos en la parte superior */
-    gap: 20px; /* Espacio entre la barra y el contenedor */
+    align-items: flex-start;
+    gap: 20px;
 }
 
 
@@ -87,6 +87,41 @@ body {
 .search-button:hover {
     background: #007bbd;
 }
+
+
+/* Colores para cada grupo */
+.busqueda-fondo {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 7px 10px rgba(0, 0, 0, 0.1);
+    margin: 10px auto;
+    max-width: 700px;
+    border: 1px solid #ccc;
+}
+
+.badge-PDI { background-color: #007bff; } 
+.badge-PAS { background-color: #6c757d; } 
+.badge-EST { background-color: #ffa807; } 
+.badge-BEC { background-color: #28a745; } 
+.badge-EXT { background-color: #dc3545; } 
+
+/* Contenedor de resultados */
+.resultados {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.resultado-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+
 
 
 .nombre {

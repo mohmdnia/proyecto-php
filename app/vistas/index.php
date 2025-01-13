@@ -10,8 +10,17 @@ if (!$conn) {
 
 <!-- barra de busqueda -->
 <?php
+
+// Variables iniciales
+$busqueda = "";
+$grupo = "TOT";
+$resultado = null;
+$mensaje = "";
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
     $busqueda = mysqli_real_escape_string($conn, trim($_POST['buscar'])); // Escapar entrada del usuario
+    $grupo = isset($_POST['grupo']) ? mysqli_real_escape_string($conn, $_POST['grupo']) : 'TOT';
 
     // Dividir la búsqueda en nombre y apellido (si hay un espacio)
     $partes = explode(' ', $busqueda, 2); 
@@ -20,18 +29,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
 
     // Consulta SQL con JOIN para obtener datos de ambas tablas
     $sql = "
-        SELECT p.*, e.*
+        SELECT p.*, e.*, e.perfil AS grupo
         FROM 340_personal AS p
         LEFT JOIN 340_personal_epsevg AS e ON p.dni = e.dni
         WHERE p.nom LIKE '%$nom%' AND p.cognoms LIKE '%$cognoms%'
     ";
+
+    // Filtrar usuarios por grupo si se selecciona uno específico
+    if ($grupo !== 'TOT') {
+        $sql .= " AND e.perfil = '$grupo'";
+    }
+    
     $query = mysqli_query($conn, $sql);
 
     // Verificar resultados
     if ($query && mysqli_num_rows($query) > 0) {
-        $resultado = mysqli_fetch_assoc($query);
+        $resultado = mysqli_fetch_assoc($query); // Obtener el primer resultado
     } else {
-        $mensaje = "No se ha encontrado ningún usuario con ese nombre y apellido";
+        $mensaje = "No hi ha registres";
     }
 }
 ?>
@@ -42,26 +57,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
     <div class="layout">
 
         <!-- Barra de búsqueda -->
-        <div class="busqueda">
-            <form action="index.php" method="POST">
-                <div class="input-group mb-1">
-                    <select class="form-select" style="max-width: 150px;">
-                        <option selected>Perfils</option>
-                        <option value="pdi">PDI</option>
-                        <option value="ptgas">PTGAS</option>
-                        <option value="est">EST</option>
-                        <option value="bec">BEC</option>
-                        <option value="ext">EXT</option>
-                    </select>
+        <div class="busqueda-fondo">
+            <div class="busqueda">
+                <form action="index.php" method="POST">
+                    <div class="input-group mb-1">
+                        <select class="form-select" name="grupo" style="max-width: 150px;">
+                            <option value="TOT" <?= $grupo === "TOT" ? "selected" : "" ?>>TOT</option>
+                            <option value="pdi" <?= $grupo === "pdi" ? "selected" : "" ?>>PDI</option>
+                            <option value="ptgas" <?= $grupo === "ptgas" ? "selected" : "" ?>>PTGAS</option>
+                            <option value="est" <?= $grupo === "est" ? "selected" : "" ?>>EST</option>
+                            <option value="bec" <?= $grupo === "bec" ? "selected" : "" ?>>BEC</option>
+                            <option value="ext" <?= $grupo === "ext" ? "selected" : "" ?>>EXT</option>
+                        </select>
 
-                    <input type="text" name="buscar" placeholder="Buscar usuari..." value="<?php echo $_POST["buscar"] ?>" class="form-control" required>
-                    <button class="btn btn-primary" type="submit">Buscar</button>
-                </div>
-            </form>
+                        <input type="text" name="buscar" placeholder="Buscar usuari..." value="<?php echo $_POST["buscar"] ?>" class="form-control">
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Resultados -->
+            <div class="resultados">
+                <?php if ($query && mysqli_num_rows($query) > 0): ?>
+                    <?php while ($row = mysqli_fetch_assoc($query)): ?>
+                        <div class="resultado-item">
+                            <!-- Etiqueta del grupo -->
+                            <span class="badge badge-<?= htmlspecialchars($row['perfil']); ?>">
+                                <?= htmlspecialchars($row['perfil']); ?>
+                            </span>
+                            <!-- Nombre del usuario -->
+                            <span><?= htmlspecialchars($row['nom']) . ' ' . htmlspecialchars($row['cognoms']); ?></span>
+                        </div>
+                    <?php endwhile; ?>
+                <?php endif; ?>
+            </div>
         </div>
 
-        <div class="contenedor">
 
+
+        <div class="contenedor">
             <div class="nombre d-flex justify-content-between align-items-center">
                 <?php if (isset($resultado)): ?>
                     <!-- Mostrar nombre y apellido -->
@@ -69,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
 
                 <?php elseif (isset($mensaje)): ?>
                     <!-- Mostrar mensaje de error si no se encuentra -->
-                    <h4><?= htmlspecialchars($mensaje); ?></h4>
+                    <h5><?= htmlspecialchars($mensaje); ?></h5>
 
                 <?php endif; ?>
 
@@ -84,20 +118,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
             <div class="section">
                 <h2>Dades personals</h2>
                 
+                <ul class = "columnas">
                 <?php if (isset($resultado)): ?>
-                    <ul class = "columnas">
-                        <li><strong>Nom: </strong><?= htmlspecialchars($resultado['nom']); ?></li>
-                        <li><strong>Cognoms: </strong><?= htmlspecialchars($resultado['cognoms']); ?></li>
-                        <li><strong>Codi postal: </strong><?= htmlspecialchars($resultado['cp']); ?></li>
-                        <li><strong>Telefon: </strong><?= htmlspecialchars($resultado['telefon']); ?></li>
-                        <li><strong>Telefon Movil: </strong><?= htmlspecialchars($resultado['telf_movil']); ?></li>
-                        <li><strong>Data de naixement: </strong><?= htmlspecialchars($resultado['data_naixement']); ?></li>
-                        <li><strong>DNI/NIE: </strong><?= htmlspecialchars($resultado['dni']); ?></li>
-                        <li><strong>Sexe: </strong><?= htmlspecialchars($resultado['sexe']); ?></li>
-                    </ul>
+                    <li><strong>Nom: </strong><?= htmlspecialchars($resultado['nom']); ?></li>
+                    <li><strong>Cognoms: </strong><?= htmlspecialchars($resultado['cognoms']); ?></li>
+                    <li><strong>Codi postal: </strong><?= htmlspecialchars($resultado['cp']); ?></li>
+                    <li><strong>Telefon: </strong><?= htmlspecialchars($resultado['telefon']); ?></li>
+                    <li><strong>Telefon Movil: </strong><?= htmlspecialchars($resultado['telf_movil']); ?></li>
+                    <li><strong>Data de naixement: </strong><?= htmlspecialchars($resultado['data_naixement']); ?></li>
+                    <li><strong>DNI/NIE: </strong><?= htmlspecialchars($resultado['dni']); ?></li>
+                    <li><strong>Sexe: </strong><?= htmlspecialchars($resultado['sexe']); ?></li>
+
                 <?php elseif (isset($mensaje)): ?>
-                    <h4><?= htmlspecialchars($mensaje); ?></h4>
+                    <h5><?= htmlspecialchars($mensaje); ?></h5>
                 <?php endif; ?>
+
+                </ul>
 
             </div>
 
@@ -105,27 +141,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
             <div class="section">
                 <h2>Datos EPSEVG</h2>
 
+                <ul class="columnas">
                 <?php if (isset($resultado)): ?>
-                    <ul class="columnas">
-                        <li><strong>CIP: </strong><?= htmlspecialchars($resultado['cip']); ?></li>
-                        <li><strong>Telefon 1: </strong><?= htmlspecialchars($resultado['telf1']); ?></li>
-                        <li><strong>Número de expedient: </strong><?= htmlspecialchars($resultado['numero_expedient']); ?></li>
-                        <li><strong>Categoria: </strong><?= htmlspecialchars($resultado['categoria']); ?></li>
-                        <li><strong>Dedicació: </strong><?= htmlspecialchars($resultado['dedicacio']); ?></li>
-                        <li><strong>Departament: </strong><?= htmlspecialchars($resultado['departament']); ?></li>
-                        <li><strong>Tasca: </strong><?= htmlspecialchars($resultado['tasca']); ?></li>
-                        <li><strong>Email: </strong><?= htmlspecialchars($resultado['email']); ?></li>
-                        <li><strong>Telefon 2: </strong><?= htmlspecialchars($resultado['telf2']); ?></li>
-                        <li><strong>Unitat estructural: </strong><?= htmlspecialchars($resultado['cip']); ?></li>
-                        <li><strong>Tipus associat: </strong><?= htmlspecialchars($resultado['tipus_associat']); ?></li>
-                        <li><strong>Titulació: </strong><?= htmlspecialchars($resultado['titulacio']); ?></li>
-                        <li><strong>Despatx: </strong><?= htmlspecialchars($resultado['despatx']); ?></li>
-                        <li><strong>Perfil: </strong><?= htmlspecialchars($resultado['perfil']); ?></li>
-                    </ul>
+                    <li><strong>CIP: </strong><?= htmlspecialchars($resultado['cip']); ?></li>
+                    <li><strong>Telefon 1: </strong><?= htmlspecialchars($resultado['telf1']); ?></li>
+                    <li><strong>Número de expedient: </strong><?= htmlspecialchars($resultado['numero_expedient']); ?></li>
+                    <li><strong>Categoria: </strong><?= htmlspecialchars($resultado['categoria']); ?></li>
+                    <li><strong>Dedicació: </strong><?= htmlspecialchars($resultado['dedicacio']); ?></li>
+                    <li><strong>Departament: </strong><?= htmlspecialchars($resultado['departament']); ?></li>
+                    <li><strong>Tasca: </strong><?= htmlspecialchars($resultado['tasca']); ?></li>
+                    <li><strong>Email: </strong><?= htmlspecialchars($resultado['email']); ?></li>
+                    <li><strong>Telefon 2: </strong><?= htmlspecialchars($resultado['telf2']); ?></li>
+                    <li><strong>Unitat estructural: </strong><?= htmlspecialchars($resultado['cip']); ?></li>
+                    <li><strong>Tipus associat: </strong><?= htmlspecialchars($resultado['tipus_associat']); ?></li>
+                    <li><strong>Titulació: </strong><?= htmlspecialchars($resultado['titulacio']); ?></li>
+                    <li><strong>Despatx: </strong><?= htmlspecialchars($resultado['despatx']); ?></li>
+                    <li><strong>Perfil: </strong><?= htmlspecialchars($resultado['perfil']); ?></li>
                 <?php elseif (isset($mensaje)): ?>
-                    <h4><?= htmlspecialchars($mensaje); ?></h4>
+                    <h5><?= htmlspecialchars($mensaje); ?></h5>
                 <?php endif; ?>
-
+                </ul>
             </div>
 
             <!-- Grupos de usuario -->
@@ -133,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                 <h2>Grups EPSEVG</h2>
 
                 <ul class="columnas">
-                    <li><strong>No hi ha registres</strong></li>
+                    <li><h5><strong>No hi ha registres</strong></h5></li>
                 </ul>
 
             </div>
