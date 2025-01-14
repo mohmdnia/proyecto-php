@@ -16,7 +16,7 @@ $busqueda = "";
 $grupo = "TOT";
 $resultado = null;
 $mensaje = "";
-
+$usuariosRelacionados = []; // Aquí almacenaremos los usuarios relacionados
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
     $busqueda = mysqli_real_escape_string($conn, trim($_POST['buscar'])); // Escapar entrada del usuario
@@ -45,6 +45,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
     // Verificar resultados
     if ($query && mysqli_num_rows($query) > 0) {
         $resultado = mysqli_fetch_assoc($query); // Obtener el primer resultado
+
+        // Obtener usuarios relacionados según el mismo departamento y perfil
+        if (!empty($resultado['departament']) && !empty($resultado['perfil'])) {
+            $departament = mysqli_real_escape_string($conn, $resultado['departament']);
+            $perfil = mysqli_real_escape_string($conn, $resultado['perfil']);  // Agregar el perfil
+
+            $sqlRelacionados = "
+                SELECT p.nom, p.cognoms, e.perfil
+                FROM 340_personal AS p
+                LEFT JOIN 340_personal_epsevg AS e ON p.dni = e.dni
+                WHERE e.departament = '$departament' 
+                AND e.perfil = '$perfil'  /* Filtrar por perfil */
+                AND p.dni != '" . mysqli_real_escape_string($conn, $resultado['dni']) . "' 
+            ";
+
+            $queryRelacionados = mysqli_query($conn, $sqlRelacionados);
+
+            if ($queryRelacionados && mysqli_num_rows($queryRelacionados) > 0) {
+                while ($relacionado = mysqli_fetch_assoc($queryRelacionados)) {
+                    $usuariosRelacionados[] = $relacionado;
+                }
+            }
+        }
     } else {
         $mensaje = "No hi ha registres";
     }
@@ -86,14 +109,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                                 <?= htmlspecialchars($row['perfil']); ?>
                             </span>
                             <!-- Nombre del usuario -->
-                            <span><?= htmlspecialchars($row['nom']) . ' ' . htmlspecialchars($row['cognoms']); ?></span>
+                            <span>
+                                <?= htmlspecialchars($row['nom']) . ' ' . htmlspecialchars($row['cognoms']); ?>
+                            </span>
                         </div>
                     <?php endwhile; ?>
                 <?php endif; ?>
             </div>
         </div>
-
-
 
         <div class="contenedor">
             <div class="nombre d-flex justify-content-between align-items-center">
@@ -118,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
             <div class="section">
                 <h2>Dades personals</h2>
                 
-                <ul class = "columnas">
+                <ul class="columnas">
                 <?php if (isset($resultado)): ?>
                     <li><strong>Nom: </strong><?= htmlspecialchars($resultado['nom']); ?></li>
                     <li><strong>Cognoms: </strong><?= htmlspecialchars($resultado['cognoms']); ?></li>
@@ -175,9 +198,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
 
             <!-- Usuarios relacionados -->
             <div class="section">
-                <h2>Usuaris relacionats</h2>
+            <h2>Usuaris relacionats</h2>
                 <ul class="columnas">
-                    <li>Aquest usuari no té usuaris relacionats per grup.</li>
+                    <?php if (!empty($usuariosRelacionados)): ?>
+                        <li><strong>Hay <?= count($usuariosRelacionados); ?> usuarios relacionados por departamento:</strong></li>
+                        <?php foreach ($usuariosRelacionados as $usuario): ?>
+                            <li>
+                                <!-- Etiqueta del grupo --> 
+                                <span class="badge badge-<?= htmlspecialchars($usuario['perfil']); ?>"> 
+                                    <?= htmlspecialchars($usuario['perfil']); ?> 
+                                </span> 
+                                <!-- Nombre del usuario --> 
+                                <span>
+                                    <?= htmlspecialchars($usuario['nom']) . ' ' . htmlspecialchars($usuario['cognoms']); ?>
+                                </span>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <li>No hay usuarios relacionados por departamento.</li>
+                    <?php endif; ?>
                 </ul>
             </div>
 
