@@ -120,10 +120,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
 
         <div class="contenedor">
             <div class="nombre d-flex justify-content-between align-items-center">
-                <?php if (isset($resultado)): ?>
+                <?php if (isset($resultado) && $resultado !== null): ?>
                     <!-- Mostrar nombre y apellido -->
-                    <h2><strong><?= htmlspecialchars($resultado['nom']) . ' ' . htmlspecialchars($resultado['cognoms']); ?></strong></h2>
-
+                    <h2>
+                        <strong>
+                            <?= htmlspecialchars($resultado['nom']) . ' ' . htmlspecialchars($resultado['cognoms']); ?>
+                        </strong>
+                        <span class="badge badge-<?= htmlspecialchars($resultado['perfil'] ?? 'default'); ?>">
+                            <?= htmlspecialchars($resultado['perfil'] ?? 'No definido'); ?>
+                        </span>
+                    </h2>
                 <?php elseif (isset($mensaje)): ?>
                     <!-- Mostrar mensaje de error si no se encuentra -->
                     <h5><?= htmlspecialchars($mensaje); ?></h5>
@@ -137,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                 </div>
             </div>
 
-            <!-- Datos personales -->
+                                <!-- Datos personales -->
             <div class="section">
                 <h2>Dades personals</h2>
                 
@@ -157,8 +163,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                 <?php endif; ?>
 
                 </ul>
-
             </div>
+            
 
             <!-- Datos EPSEVG -->
             <div class="section">
@@ -198,19 +204,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
 
             <!-- Usuarios relacionados -->
             <div class="section">
-            <h2>Usuaris relacionats</h2>
+                <h2>Usuarios relacionados</h2>
                 <ul class="columnas">
                     <?php if (!empty($usuariosRelacionados)): ?>
                         <li><strong>Hay <?= count($usuariosRelacionados); ?> usuarios relacionados por departamento:</strong></li>
                         <?php foreach ($usuariosRelacionados as $usuario): ?>
                             <li>
-                                <!-- Etiqueta del grupo --> 
-                                <span class="badge badge-<?= htmlspecialchars($usuario['perfil']); ?>"> 
-                                    <?= htmlspecialchars($usuario['perfil']); ?> 
-                                </span> 
-                                <!-- Nombre del usuario --> 
+                                <!-- Verificar que los valores existan antes de mostrarlos -->
+                                <span class="badge badge-<?= isset($usuario['perfil']) ? htmlspecialchars($usuario['perfil']) : 'default'; ?>">
+                                    <?= isset($usuario['perfil']) ? htmlspecialchars($usuario['perfil']) : 'No definido'; ?>
+                                </span>
                                 <span>
-                                    <?= htmlspecialchars($usuario['nom']) . ' ' . htmlspecialchars($usuario['cognoms']); ?>
+                                    <?= isset($usuario['nom']) && isset($usuario['cognoms']) ? htmlspecialchars($usuario['nom']) . ' ' . htmlspecialchars($usuario['cognoms']) : 'Nombre no disponible'; ?>
                                 </span>
                             </li>
                         <?php endforeach; ?>
