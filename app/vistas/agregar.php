@@ -44,37 +44,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 // Verificar envio formulario epsevg
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//     $cip = isset($_POST['cip']) ? $_POST['cip'] : '';
-//     $telefono_1 = isset($_POST['telefono_1']) ? $_POST['telefono_1'] : '';
-//     $num_expediente = isset($_POST['num_expediente']) ? $_POST['num_expediente'] : '';
-//     $categoria = isset($_POST['categoria']) ? $_POST['categoria'] : '';
-//     $dedicacion = isset($_POST['dedicacion']) ? $_POST['dedicacion'] : '';
-//     $departamento = isset($_POST['departamento']) ? $_POST['departamento'] : '';
-//     $tarea = isset($_POST['tarea']) ? $_POST['tarea'] : '';
-//     $email = isset($_POST['email']) ? $_POST['email'] : '';
-//     $telefono_2 = isset($_POST['telefono_2']) ? $_POST['telefono_2'] : '';
-//     $unidad_estructural = isset($_POST['unidad_estructural']) ? $_POST['unidad_estructural'] : '';
-//     $tipo_asociado = isset($_POST['tipo_asociado']) ? $_POST['tipo_asociado'] : '';
-//     $titulacion = isset($_POST['titulacion']) ? $_POST['titulacion'] : '';
-//     $despacho = isset($_POST['despacho']) ? $_POST['despacho'] : '';
-//     $perfil = isset($_POST['perfil']) ? $_POST['perfil'] : '';
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $cip = isset($_POST['cip']) ? $_POST['cip'] : '';
+    $telf1 = isset($_POST['telf1']) ? $_POST['telf1'] : '';
+    $numero_expedient = isset($_POST['numero_expedient']) ? $_POST['numero_expedient'] : '';
+    $incid = isset($_POST['incid']) ? $_POST['incid'] : '';
+    $categoria = isset($_POST['categoria']) ? $_POST['categoria'] : '';
+    $dedicacio = isset($_POST['dedicacio']) ? $_POST['dedicacio'] : '';
+    $departament = isset($_POST['departament']) ? $_POST['departament'] : '';
+    $tasca = isset($_POST['tasca']) ? $_POST['tasca'] : '';
+    $dni = isset($_POST['dni']) ? $_POST['dni'] : '';
+    $email = isset($_POST['email']) ? $_POST['email'] : '';
+    $telf2 = isset($_POST['telf2']) ? $_POST['telf2'] : '';
+    $unitat_estructural = isset($_POST['unitat_estructural']) ? $_POST['unitat_estructural'] : '';
+    $tipus_asociat = isset($_POST['tipus_asociat']) ? $_POST['tipus_asociat'] : '';
+    $titulacio = isset($_POST['titulacio']) ? $_POST['titulacio'] : '';
+    $despatx = isset($_POST['despatx']) ? $_POST['despatx'] : '';
+    $perfil = isset($_POST['perfil']) ? $_POST['perfil'] : '';
 
-//     // Insertar los datos en la base de datos
-//     $sql = "INSERT INTO 340_personales_epsevg (cip, telefono_1, num_expediente, categoria, dedicacion, departamento, tarea, email,
-//                 telefono_2, unidad_estructural, tipo_asociado, titulacion, despacho, perfil)
-//             VALUES ('$cip', '$telefono_1', '$num_expediente', '$categoria', '$dedicacion', '$departamento', '$tarea', '$email', '$telefono_2', 
-//                     '$unidad_estructural', '$tipo_asociado', '$titulacion', '$despacho', '$perfil')";
+    // Insertar los datos en la base de datos
+    $sql = "INSERT INTO 340_personal_epsevg (cip, telf1, numero_expedient, incid, categoria, dedicacio, departament, tasca,
+                dni, unitat_estructural, tipus_asociat, titulacio, despatx, perfil)
+            VALUES ('$cip', '$telf1', '$numero_expedient', '$incid', '$categoria', '$dedicacio', '$departament', '$tasca', '$dni', 
+                    '$unitat_estructural', '$tipus_asociat', '$titulacio', '$despatx', '$perfil')";
 
-//     if (mysqli_query($conn, $sql)) {
-//         $_SESSION['message'] = 'Datos EPSEVG agregados con exito';
-//         $_SESSION['message_type'] = 'success';
-//         header('Location: index.php');
-//         exit;
-//     } else {
-//         echo "Error: " . mysqli_error($conn);
-//     }
-// }
+    if (mysqli_query($conn, $sql)) {
+        $_SESSION['message'] = 'Datos EPSEVG agregados con exito';
+        $_SESSION['message_type'] = 'success';
+        header('Location: index.php');
+        exit;
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+}
 
 ?>
 
@@ -177,6 +179,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="mb-3">
                         <label for="unitat_estructural" class="form-label">Unitat Estructural</label>
                         <input type="text" class="form-control" name="categoria" id="categoria" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="inicid" class="form-label">Inicid</label>
+                        <input type="text" class="form-control" name="inicid" id="inicid" required>
                     </div>
 
                     <div class="mb-3">

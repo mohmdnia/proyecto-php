@@ -3,21 +3,37 @@ session_start();
 include_once "../modelo/database.php";
 include_once "header.php";
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $query = "DELETE FROM datos_personales WHERE id = $id";
+// Verificamos si se pasó el parámetro 'id' en la URL
+if (isset($_GET['dni'])) {
+    $dni = $_GET['dni']; 
 
-    $result = mysqli_query($conn, $query);
+    $query = $conn->prepare("DELETE FROM 340_personal WHERE dni = ?");
+    $query->bind_param("s", $dni);
 
-    if (!$result) {
-        die("Query Failed: " . mysqli_error($conn));
+    if ($query->execute()) {
+        if ($query->affected_rows > 0) {
+            $_SESSION['message'] = 'Empleado borrado con éxito';
+            $_SESSION['message_type'] = 'danger';
+        } else {
+            $_SESSION['message'] = 'No se encontró el empleado con el ID proporcionado';
+            $_SESSION['message_type'] = 'warning';
+        }
+        
+        $query->close(); 
+        $conn->close();      
+
+    } else {
+        $_SESSION['message'] = 'Error al eliminar el empleado';
+        $_SESSION['message_type'] = 'warning';
     }
 
-    $_SESSION['message'] = 'Empleado borrado con exito';
-    $_SESSION['message_type'] = 'danger';
-
-    mysqli_close($conn); 
-    header("Location: index.php");
-    exit(); 
+} else {
+    // Si no se proporciona un ID en la URL
+    $_SESSION['message'] = 'No se proporcionó ningún ID';
+    $_SESSION['message_type'] = 'warning';
 }
+
+// Redirigir al índice (o a la página que deseas después de la eliminación)
+header("Location: index.php");
+exit();
 ?>

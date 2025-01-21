@@ -11,6 +11,19 @@ if (isset($_SESSION['usuario'])) {
     $usuario = htmlspecialchars($_SESSION['usuario']);
 }
 
+// Comprobar si hay un mensaje de sesión
+if (isset($_SESSION['message'])) {
+    // Mostrar el mensaje de la sesión
+    echo '<div class="alert alert-' . $_SESSION['message_type'] . '">';
+    echo $_SESSION['message'];
+    echo '</div>';
+
+    // Limpiar el mensaje de sesión después de mostrarlo
+    unset($_SESSION['message']);
+    unset($_SESSION['message_type']);
+}
+
+
 ?>
 
 <!DOCTYPE html>

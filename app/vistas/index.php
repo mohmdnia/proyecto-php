@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                 <div class="botones ms-auto">
                     <a href="agregar.php" class="btn btn-success"><i class="bi bi-person-add"></i></a>
                     <a href="editar.php" class="btn btn-secondary"><i class="bi bi-person-fill-gear"></i></a>
-                    <a href="eliminar.php" class="btn btn-danger"><i class="bi bi-person-dash-fill"></i></a>
+                    <a href="eliminar.php?dni=<?= htmlspecialchars($resultado['dni']); ?>" class="btn btn-danger"><i class="bi bi-person-dash-fill"></i></a>
                 </div>
             </div>
 
