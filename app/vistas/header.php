@@ -46,7 +46,5 @@ if (isset($_SESSION['message'])) {
             <h3 class="navbar-brand">Hola, <?= $usuario ?></h3>
         </div>
     </nav>
-
-
 </body>
 </html>

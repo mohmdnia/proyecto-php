@@ -1,35 +1,100 @@
 <?php
-
-    include_once "../modelo/database.php";
-    include_once "header.php";
-
-
+include_once "../modelo/database.php";
+include_once "header.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : '';
-    $apellido = isset($_POST['apellido']) ? $_POST['apellido'] : '';
-    $codigo_postal = isset($_POST['codigo_postal']) ? $_POST['codigo_postal'] : '';
-    $telefono = isset($_POST['telefono']) ? $_POST['telefono'] : '';
-    $fecha_nacimiento = isset($_POST['fecha_nacimiento']) ? $_POST['fecha_nacimiento'] : '';
-    $dni_nie = isset($_POST['dni_nie']) ? $_POST['dni_nie'] : '';
-    $poblacion = isset($_POST['poblacion']) ? $_POST['poblacion'] : '';
-    $sexo = isset($_POST['sexo']) ? $_POST['sexo'] : '';
+    // Actualización de los datos personales
+    $nom = isset($_POST['nom']) ? $_POST['nom'] : '';
+    $cognoms = isset($_POST['cognoms']) ? $_POST['cognoms'] : '';
+    $cp = isset($_POST['cp']) ? $_POST['cp'] : '';
+    $telefon = isset($_POST['telefon']) ? $_POST['telefon'] : '';
+    $telf_movil = isset($_POST['telf_movil']) ? $_POST['telf_movil'] : '';
+    $data_naixement = isset($_POST['data_naixement']) ? $_POST['data_naixement'] : '';
+    $dni = isset($_POST['dni']) ? $_POST['dni'] : '';
+    $poblacio = isset($_POST['poblacio']) ? $_POST['poblacio'] : '';
+    $sexe = isset($_POST['sexe']) ? $_POST['sexe'] : '';
 
-    $sql = "UPDATE...";
+
+    // Consultar SQL para actualizar los datos personales
+    $sql = "UPDATE 340_personal SET 
+            nom = '$nom',
+            cognoms = '$cognoms',
+            cp = '$cp',
+            telefon = '$telefon',
+            telf_movil = '$telf_movil',
+            data_naixement = '$data_naixement',
+            dni = '$dni',
+            poblacio = '$poblacio',
+            sexe = '$sexe'
+            WHERE dni = '$dni'";
 
     if (mysqli_query($conn, $sql)) {
+        // Redirección con mensaje de éxito
+        $_SESSION['message'] = 'Datos personales actualizados con éxito.';
+        $_SESSION['message_type'] = 'success';
         header('Location: index.php');
         exit;
     } else {
-        echo "Error: " . mysqli_error($conn);
+        // Error de actualización
+        error_log("Error al ejecutar la consulta SQL: " . mysqli_error($conn));
+        $_SESSION['message'] = 'Error al actualizar los datos. Por favor, inténtalo de nuevo.';
+        $_SESSION['message_type'] = 'danger';
+        header('Location: index.php');
+        exit;
     }
 
-    $_SESSION['message'] = 'Empleado actualizado con exito';
-    $_SESSION['message_type'] = 'success';
+    // Actualización de los datos EPSEVG
+    $cip = isset($_POST['cip']) ? $_POST['cip'] : '';
+    $telf1 = isset($_POST['telf1']) ? $_POST['telf1'] : '';
+    $numero_expedient = isset($_POST['numero_expedient']) ? $_POST['numero_expedient'] : '';
+    $incid = isset($_POST['incid']) ? $_POST['incid'] : '';
+    $categoria = isset($_POST['categoria']) ? $_POST['categoria'] : '';
+    $dedicacio = isset($_POST['dedicacio']) ? $_POST['dedicacio'] : '';
+    $departament = isset($_POST['departament']) ? $_POST['departament'] : '';
+    $tasca = isset($_POST['tasca']) ? $_POST['tasca'] : '';
+    $dni = isset($_POST['dni']) ? $_POST['dni'] : '';
+    $email = isset($_POST['email']) ? $_POST['email'] : '';
+    $telf2 = isset($_POST['telf2']) ? $_POST['telf2'] : '';
+    $unitat_estructural = isset($_POST['unitat_estructural']) ? $_POST['unitat_estructural'] : '';
+    $tipus_asociat = isset($_POST['tipus_asociat']) ? $_POST['tipus_asociat'] : '';
+    $titulacio = isset($_POST['titulacio']) ? $_POST['titulacio'] : '';
+    $despatx = isset($_POST['despatx']) ? $_POST['despatx'] : '';
+    $perfil = isset($_POST['perfil']) ? $_POST['perfil'] : '';
+
+
+    // Actualización de los datos en la tabla EPSEVG
+    $sql = "UPDATE 340_personal_epsevg SET 
+                cip = '$cip', 
+                telf1 = '$telf1', 
+                numero_expedient = '$numero_expedient',
+                incid = '$incid', 
+                categoria = '$categoria', 
+                dedicacio = '$dedicacio', 
+                departament = '$departament', 
+                tasca = '$tasca', 
+                dni = '$dni',
+                unitat_estructural = '$unitat_estructural', 
+                tipus_asociat = '$tipus_asociat', 
+                titulacio = '$titulacio', 
+                despatx = '$despatx', 
+                perfil = '$perfil'
+            WHERE dni = '$dni'";
+
+    if (mysqli_query($conn, $sql)) {
+        $_SESSION['message'] = 'Datos de EPSEVG actualizados con éxito.';
+        $_SESSION['message_type'] = 'success';
+        header('Location: index.php');
+        exit;
+    } else {
+        error_log("Error al ejecutar la consulta SQL: " . mysqli_error($conn));
+        $_SESSION['message'] = 'Error al actualizar los datos de EPSEVG. Por favor, inténtalo de nuevo.';
+        $_SESSION['message_type'] = 'danger';
+        header('Location: index.php');
+        exit;
+    }
 }
+
 ?>
-
-
 
 <!-- codigo html -->
 <div class="container mt-5">

@@ -42,14 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
     
     $query = mysqli_query($conn, $sql);
 
-    // Verificar resultados
     if ($query && mysqli_num_rows($query) > 0) {
         $resultado = mysqli_fetch_assoc($query); // Obtener el primer resultado
 
         // Obtener usuarios relacionados según el mismo departamento y perfil
         if (!empty($resultado['departament']) && !empty($resultado['perfil'])) {
             $departament = mysqli_real_escape_string($conn, $resultado['departament']);
-            $perfil = mysqli_real_escape_string($conn, $resultado['perfil']);  // Agregar el perfil
+            $perfil = mysqli_real_escape_string($conn, $resultado['perfil']);
 
             $sqlRelacionados = "
                 SELECT p.nom, p.cognoms, e.perfil
@@ -87,13 +86,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                         <select class="form-select" name="grupo" style="max-width: 150px;">
                             <option value="TOT" <?= $grupo === "TOT" ? "selected" : "" ?>>TOT</option>
                             <option value="pdi" <?= $grupo === "pdi" ? "selected" : "" ?>>PDI</option>
+                            <option value="pas" <?= $grupo === "pas" ? "selected" : "" ?>>PAS</option>
                             <option value="ptgas" <?= $grupo === "ptgas" ? "selected" : "" ?>>PTGAS</option>
                             <option value="est" <?= $grupo === "est" ? "selected" : "" ?>>EST</option>
                             <option value="bec" <?= $grupo === "bec" ? "selected" : "" ?>>BEC</option>
                             <option value="ext" <?= $grupo === "ext" ? "selected" : "" ?>>EXT</option>
                         </select>
 
-                        <input type="text" name="buscar" placeholder="Buscar usuari..." value="<?php echo $_POST["buscar"] ?>" class="form-control">
+                        <input type="text" name="buscar" placeholder="Buscar usuari..." value="<?php echo $_POST['buscar'] ?? ''; ?>" class="form-control">
                         <button class="btn btn-primary" type="submit">Buscar</button>
                     </div>
                 </form>
