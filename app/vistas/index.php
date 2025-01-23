@@ -6,10 +6,7 @@ include_once "header.php";
 if (!$conn) {
     die('Error de conexión: ' . mysqli_connect_error());
 }
-?>
 
-<!-- barra de busqueda -->
-<?php
 
 // Variables iniciales
 $busqueda = "";
@@ -29,10 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
 
     // Consulta SQL con JOIN para obtener datos de ambas tablas
     $sql = "
-        SELECT p.*, e.*, e.perfil AS grupo
-        FROM 340_personal AS p
-        LEFT JOIN 340_personal_epsevg AS e ON p.dni = e.dni
-        WHERE p.nom LIKE '%$nom%' AND p.cognoms LIKE '%$cognoms%'
+    SELECT 
+        p.*, 
+        e.*, 
+        c.nom AS categoria, 
+        t.nom AS titulacio
+    FROM 340_personal AS p
+    LEFT JOIN 340_personal_epsevg AS e ON p.dni = e.dni
+    LEFT JOIN 340_personal_categories AS c ON e.categoria = c.id
+    LEFT JOIN 340_personal_titulacions AS t ON e.titulacio = t.id
+    WHERE p.nom LIKE '%$nom%' AND p.cognoms LIKE '%$cognoms%'
     ";
 
     // Filtrar usuarios por grupo si se selecciona uno específico
@@ -87,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                             <option value="TOT" <?= $grupo === "TOT" ? "selected" : "" ?>>TOT</option>
                             <option value="pdi" <?= $grupo === "pdi" ? "selected" : "" ?>>PDI</option>
                             <option value="pas" <?= $grupo === "pas" ? "selected" : "" ?>>PAS</option>
-                            <option value="ptgas" <?= $grupo === "ptgas" ? "selected" : "" ?>>PTGAS</option>
                             <option value="est" <?= $grupo === "est" ? "selected" : "" ?>>EST</option>
                             <option value="bec" <?= $grupo === "bec" ? "selected" : "" ?>>BEC</option>
                             <option value="ext" <?= $grupo === "ext" ? "selected" : "" ?>>EXT</option>
@@ -140,6 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                     <a href="agregar.php" class="btn btn-success"><i class="bi bi-person-add"></i></a>
                     <a href="editar.php" class="btn btn-secondary"><i class="bi bi-person-fill-gear"></i></a>
                     <a href="eliminar.php?dni=<?= htmlspecialchars($resultado['dni']); ?>" class="btn btn-danger"><i class="bi bi-person-dash-fill"></i></a>
+                    <a href="baja.php" class="btn btn-primary btn-lg active"><i class="bi bi-person-fill-down"></i></a>
                 </div>
             </div>
 

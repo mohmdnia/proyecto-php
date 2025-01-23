@@ -3,11 +3,12 @@ session_start();
 include_once "../modelo/database.php";
 include_once "header.php";
 
-// Verificamos si se pasó el parámetro 'id' en la URL
+// Verificamos si se pasó el parámetro 'dni' en la URL
 if (isset($_GET['dni'])) {
     $dni = $_GET['dni']; 
 
-    $query = $conn->prepare("DELETE FROM 340_personal WHERE dni = ?");
+    // Preparamos la consulta para marcar al usuario como eliminado
+    $query = $conn->prepare("UPDATE 340_personal SET is_deleted = 1 WHERE dni = ?");
     $query->bind_param("s", $dni);
 
     if ($query->execute()) {
@@ -15,7 +16,7 @@ if (isset($_GET['dni'])) {
             $_SESSION['message'] = 'Empleado borrado con éxito';
             $_SESSION['message_type'] = 'danger';
         } else {
-            $_SESSION['message'] = 'No se encontró el empleado con el ID proporcionado';
+            $_SESSION['message'] = 'No se encontró el empleado con el DNI proporcionado';
             $_SESSION['message_type'] = 'warning';
         }
         
@@ -28,8 +29,8 @@ if (isset($_GET['dni'])) {
     }
 
 } else {
-    // Si no se proporciona un ID en la URL
-    $_SESSION['message'] = 'No se proporcionó ningún ID';
+    // Si no se proporciona un DNI en la URL
+    $_SESSION['message'] = 'No se proporcionó ningún DNI';
     $_SESSION['message_type'] = 'warning';
 }
 

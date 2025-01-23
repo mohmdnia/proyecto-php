@@ -17,8 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sexe = isset($_POST['sexe']) ? $_POST['sexe'] : '';
 
     // Insertar los datos
-            $sql = "INSERT INTO 340_personal (nom, cognoms, cp, telefon, telf_movil, data_naixement, dni, poblacio, sexe)
-            VALUES ('$nom', '$cognoms', '$cp', '$telefon', '$telf_movil', '$data_naixement', '$dni', '$poblacio', '$sexe')";
+    $sql = "INSERT INTO 340_personal (nom, cognoms, cp, telefon, telf_movil, data_naixement, dni, poblacio, sexe)
+        VALUES ('$nom', '$cognoms', '$cp', '$telefon', '$telf_movil', '$data_naixement', '$dni', '$poblacio', '$sexe')";
 
 
     if (mysqli_query($conn, $sql)) {
@@ -63,8 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $perfil = isset($_POST['perfil']) ? $_POST['perfil'] : '';
 
     // Insertar los datos en la base de datos
-    $sql = "INSERT INTO 340_personal_epsevg (cip, telf1, numero_expedient, incid, categoria, dedicacio, departament, tasca,
-                dni, unitat_estructural, tipus_asociat, titulacio, despatx, perfil)
+    $sql = "INSERT INTO 340_personal_epsevg (cip, telf1, numero_expedient, incid, categoria, dedicacio, departament, tasca, 
+            dni, unitat_estructural, tipus_asociat, titulacio, despatx, perfil)
             VALUES ('$cip', '$telf1', '$numero_expedient', '$incid', '$categoria', '$dedicacio', '$departament', '$tasca', '$dni', 
                     '$unitat_estructural', '$tipus_asociat', '$titulacio', '$despatx', '$perfil')";
 
@@ -77,11 +77,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: " . mysqli_error($conn);
     }
 }
-
 ?>
 
 <!-- Código HTML -->
-
 <!-- Contenedor con los dos formularios uno al lado del otro -->
 <div class="container mt-5">
     <div class="row">
@@ -139,9 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="dni" class="form-label">DNI/NIE</label>
                         <input type="text" class="form-control" name="dni" id="dni" required>
                     </div>
-        
-                    <button type="submit" class="btn btn-primary">Afegir Empleat</button>
-                </form>
+                        </form>
             </div>
         </div>
 
@@ -231,7 +227,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" class="form-control" name="perfil" id="perfil" required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Afegir Dades EPSEVG</button>
+                    <button type="submit" class="btn btn-primary">Afegir Dades</button>
 
                     <!-- Boton para volver al indice -->
                     <div class="d-inline-flex gap-1">
@@ -241,7 +237,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </form>
             </div>
         </div>
-
-
     </div>
 </div>
