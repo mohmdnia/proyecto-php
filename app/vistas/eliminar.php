@@ -7,8 +7,14 @@ include_once "header.php";
 if (isset($_GET['dni'])) {
     $dni = $_GET['dni']; 
 
-    // Preparamos la consulta para marcar al usuario como eliminado
-    $query = $conn->prepare("UPDATE 340_personal SET is_deleted = 1 WHERE dni = ?");
+    // Primero eliminamos de las tablas relacionadas, si es necesario
+    $query = $conn->prepare("DELETE FROM 340_personal_epsevg WHERE dni = ?");
+    $query->bind_param("s", $dni);
+    $query->execute();
+    $query->close();
+
+    // Luego eliminamos al empleado de la tabla principal
+    $query = $conn->prepare("DELETE FROM 340_personal WHERE dni = ?");
     $query->bind_param("s", $dni);
 
     if ($query->execute()) {
@@ -19,17 +25,12 @@ if (isset($_GET['dni'])) {
             $_SESSION['message'] = 'No se encontró el empleado con el DNI proporcionado';
             $_SESSION['message_type'] = 'warning';
         }
-        
         $query->close(); 
-        $conn->close();      
-
     } else {
         $_SESSION['message'] = 'Error al eliminar el empleado';
         $_SESSION['message_type'] = 'warning';
     }
-
 } else {
-    // Si no se proporciona un DNI en la URL
     $_SESSION['message'] = 'No se proporcionó ningún DNI';
     $_SESSION['message_type'] = 'warning';
 }

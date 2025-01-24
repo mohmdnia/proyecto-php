@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                 <h2>Grups EPSEVG</h2>
 
                 <ul class="columnas">
-                    <li><h5><strong>No hi ha registres</strong></h5></li>
+                    <li><h5>No hi ha registres</h5></li>
                 </ul>
 
             </div>
@@ -223,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                             </li>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <li>No hay usuarios relacionados por departamento.</li>
+                        <li>No hi ha usuaris relacionts per departament.</li>
                     <?php endif; ?>
                 </ul>
             </div>

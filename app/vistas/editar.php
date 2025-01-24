@@ -96,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param($types, ...$params);
     
         $stmt->execute();
-    } 
+    }
 
 
     update_table($conn, '340_personal', $new_data_personal, $dni);
