@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
     $partes = explode(' ', $busqueda, 2); 
     $nom = $partes[0];
     $cognoms = isset($partes[1]) ? $partes[1] : '';
-
+    $grupo_id = 2;
     // Consulta SQL con JOIN para obtener datos de ambas tablas
     $sql = "
     SELECT 

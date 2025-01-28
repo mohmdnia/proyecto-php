@@ -1,4 +1,4 @@
-<?php
+<?php 
 include_once "../modelo/database.php";
 include_once "header.php";
 
@@ -11,37 +11,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($observacions)) {
         $_SESSION['message'] = 'El camp "Observacions" és obligatori.';
         $_SESSION['message_type'] = 'danger';
-        header('Location: actualizar.php');
+        header('Location: editar.php');
         exit;
     }
 
     // Datos enviados por el formulario
-    $dni = isset($_POST['dni']) ? $_POST['dni'] : '';
-    $new_data_personal = [
-        'nom' => $_POST['nom'] ?? '',
-        'cognoms' => $_POST['cognoms'] ?? '',
-        'cp' => $_POST['cp'] ?? '',
-        'telefon' => $_POST['telefon'] ?? '',
-        'telf_movil' => $_POST['telf_movil'] ?? '',
-        'data_naixement' => $_POST['data_naixement'] ?? '',
-        'poblacio' => $_POST['poblacio'] ?? '',
-        'sexe' => $_POST['sexe'] ?? ''
-    ];
-    $new_data_epsevg = [
-        'cip' => $_POST['cip'] ?? '',
-        'telf1' => $_POST['telf1'] ?? '',
-        'numero_expedient' => $_POST['numero_expedient'] ?? '',
-        'incid' => $_POST['incid'] ?? '',
-        'categoria' => $_POST['categoria'] ?? '',
-        'dedicacio' => $_POST['dedicacio'] ?? '',
-        'departament' => $_POST['departament'] ?? '',
-        'tasca' => $_POST['tasca'] ?? '',
-        'unitat_estructural' => $_POST['unitat_estructural'] ?? '',
-        'tipus_asociat' => $_POST['tipus_asociat'] ?? '',
-        'titulacio' => $_POST['titulacio'] ?? '',
-        'despatx' => $_POST['despatx'] ?? '',
-        'perfil' => $_POST['perfil'] ?? ''
-    ];
+    $dni = isset($_POST['dni']) ? $_POST['dni'] : ''; // Verifica si el DNI es enviado correctamente
+
+    // Definir $new_data_personal y $new_data_epsevg como arrays vacíos por defecto
+    $new_data_personal = [];
+    $new_data_epsevg = [];
+
+    // Datos personales
+    if (isset($_POST['nom'])) {
+        $new_data_personal['nom'] = $_POST['nom'];
+        $new_data_personal['cognoms'] = $_POST['cognoms'];
+        $new_data_personal['cp'] = $_POST['cp'];
+        $new_data_personal['telefon'] = $_POST['telefon'];
+        $new_data_personal['telf_movil'] = $_POST['telf_movil'];
+        $new_data_personal['data_naixement'] = $_POST['data_naixement'];
+        $new_data_personal['poblacio'] = $_POST['poblacio'] ?? null;
+        $new_data_personal['sexe'] = $_POST['sexe'];
+    }
+
+    // Datos EPSEVG
+    if (isset($_POST['cip'])) {
+        $new_data_epsevg['cip'] = $_POST['cip'];
+        $new_data_epsevg['telf1'] = $_POST['telf1'];
+        $new_data_epsevg['numero_expedient'] = $_POST['numero_expedient'];
+        $new_data_epsevg['incid'] = $_POST['incid'] ?? null; // Manejar campo incid
+        $new_data_epsevg['categoria'] = $_POST['categoria'];
+        $new_data_epsevg['dedicacio'] = $_POST['dedicacio'];
+        $new_data_epsevg['departament'] = $_POST['departament'];
+        $new_data_epsevg['tasca'] = $_POST['tasca'];
+        $new_data_epsevg['unitat_estructural'] = $_POST['unitat_estructural'];
+        $new_data_epsevg['tipus_associat'] = $_POST['tipus_associat'] ?? null; // Manejar campo tipus_asociat
+        $new_data_epsevg['titulacio'] = $_POST['titulacio'];
+        $new_data_epsevg['despatx'] = $_POST['despatx'];
+        $new_data_epsevg['perfil'] = $_POST['perfil'];
+    }
 
     // Obtener datos actuales del usuario
     function get_current_data($conn, $dni, $table) {
@@ -54,17 +62,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $current_data_personal = get_current_data($conn, $dni, '340_personal');
     $current_data_epsevg = get_current_data($conn, $dni, '340_personal_epsevg');
-
+    
     // Comparar datos y registrar cambios
     function log_changes($conn, $dni, $field, $old_value, $new_value, $observacions) {
-        $sql = "INSERT INTO 340_personal_historic (dni, camp_canviat, valor_antic, valor_nou, observacions, data_canvi) 
+        $old_value = $old_value ?? ''; // Asignar valor vacío si es NULL
+        $new_value = $new_value ?? ''; // Asignar valor vacío si es NULL
+
+        $sql = "INSERT INTO 340_personal_historic (dni, camp_canviat, valor_antic, valor_nou, observacions, data_efectiva) 
                 VALUES (?, ?, ?, ?, ?, NOW())";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sssss", $dni, $field, $old_value, $new_value, $observacions);
         $stmt->execute();
     }
 
-    // Actualizar datos personales
+    // Registrar cambios para datos personales
     foreach ($new_data_personal as $field => $new_value) {
         $old_value = $current_data_personal[$field] ?? null;
         if ($new_value !== $old_value) {
@@ -72,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Actualizar datos EPSEVG
+    // Registrar cambios para datos EPSEVG
     foreach ($new_data_epsevg as $field => $new_value) {
         $old_value = $current_data_epsevg[$field] ?? null;
         if ($new_value !== $old_value) {
@@ -82,22 +93,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Actualización de los datos en las tablas principales
     function update_table($conn, $table, $data, $dni) {
+        if (empty($data)) {
+            return; // No actualizar si no hay datos
+        }
+
         $set_clause = implode(", ", array_map(fn($field) => "$field = ?", array_keys($data)));
         $sql = "UPDATE $table SET $set_clause WHERE dni = ?";
         $stmt = $conn->prepare($sql);
-    
-        // Combina los valores del array con $dni
+
+        // Combinar los valores del array con $dni
         $params = array_merge(array_values($data), [$dni]);
-        
-        // Genera los tipos de parámetros (s para string)
+
+        // Generar los tipos de parámetros (s para string)
         $types = str_repeat("s", count($params));
-    
-        // Usa call_user_func_array para pasar los argumentos a bind_param
+
+        // Usar call_user_func_array para pasar los argumentos a bind_param 
         $stmt->bind_param($types, ...$params);
-    
         $stmt->execute();
     }
-
 
     update_table($conn, '340_personal', $new_data_personal, $dni);
     update_table($conn, '340_personal_epsevg', $new_data_epsevg, $dni);
@@ -119,7 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="row">
             <div class="col-md-12 mb-4">
                 <div class="card bg-light p-3">
-                    <form method="POST" action="actualizar.php">
+                    <form method="POST" action="editar.php">
                         <!-- Datos Personales -->
                         <h5 class="mt-4">Dades Personals</h5>
                         <div class="mb-3">
@@ -133,8 +146,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
 
                         <div class="mb-3">
-                            <label for="sexo" class="form-label">Sexe</label>
-                            <select class="form-control" name="sexo" id="sexo" required>
+                            <label for="sexe" class="form-label">Sexe</label>
+                            <select class="form-control" name="sexe" id="sexe" required>
                                 <option value="M" <?= (isset($empleat['sexe']) && $empleat['sexe'] == 'M') ? 'selected' : '' ?>>Masculí</option>
                                 <option value="F" <?= (isset($empleat['sexe']) && $empleat['sexe'] == 'F') ? 'selected' : '' ?>>Femení</option>
                             </select>
