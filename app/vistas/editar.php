@@ -16,9 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Datos enviados por el formulario
-    $dni = isset($_POST['dni']) ? $_POST['dni'] : ''; // Verifica si el DNI es enviado correctamente
+    $dni = isset($_POST['dni']) ? $_POST['dni'] : ''; 
 
-    // Definir $new_data_personal y $new_data_epsevg como arrays vacíos por defecto
+
     $new_data_personal = [];
     $new_data_epsevg = [];
 
@@ -118,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Mensaje de éxito
     $_SESSION['message'] = 'Dades actualitzades amb èxit.';
     $_SESSION['message_type'] = 'success';
-    header('Location: index.php');
+    header('Location: editar.php?dni=' . $dni); 
     exit;
 }
 ?>

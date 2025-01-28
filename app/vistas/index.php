@@ -23,20 +23,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
     $partes = explode(' ', $busqueda, 2); 
     $nom = $partes[0];
     $cognoms = isset($partes[1]) ? $partes[1] : '';
-    $grupo_id = 2;
+
     // Consulta SQL con JOIN para obtener datos de ambas tablas
+// Comprobar si la búsqueda es un número (posible DNI)
+if (is_numeric($busqueda)) {
+    // Si es un número, la búsqueda es por DNI
     $sql = "
-    SELECT 
-        p.*, 
-        e.*, 
-        c.nom AS categoria, 
-        t.nom AS titulacio
-    FROM 340_personal AS p
-    LEFT JOIN 340_personal_epsevg AS e ON p.dni = e.dni
-    LEFT JOIN 340_personal_categories AS c ON e.categoria = c.id
-    LEFT JOIN 340_personal_titulacions AS t ON e.titulacio = t.id
-    WHERE p.nom LIKE '%$nom%' AND p.cognoms LIKE '%$cognoms%'
-    ";
+        SELECT 
+            p.*, 
+            e.*, 
+            c.nom AS categoria, 
+            t.nom AS titulacio
+        FROM 340_personal AS p
+        LEFT JOIN 340_personal_epsevg AS e ON p.dni = e.dni
+        LEFT JOIN 340_personal_categories AS c ON e.categoria = c.id
+        LEFT JOIN 340_personal_titulacions AS t ON e.titulacio = t.id
+        WHERE p.dni LIKE '%$busqueda%'"; // Buscar por DNI
+} else {
+    // Si no es un número, la búsqueda es por nombre y apellido
+    // Dividir la búsqueda en nombre y apellido (si hay un espacio)
+    $partes = explode(' ', $busqueda, 2); 
+    $nom = $partes[0];
+    $cognoms = isset($partes[1]) ? $partes[1] : '';
+
+    $sql = "
+        SELECT 
+            p.*, 
+            e.*, 
+            c.nom AS categoria, 
+            t.nom AS titulacio
+        FROM 340_personal AS p
+        LEFT JOIN 340_personal_epsevg AS e ON p.dni = e.dni
+        LEFT JOIN 340_personal_categories AS c ON e.categoria = c.id
+        LEFT JOIN 340_personal_titulacions AS t ON e.titulacio = t.id
+        WHERE p.nom LIKE '%$nom%' AND p.cognoms LIKE '%$cognoms%'"; // Buscar por nombre y apellido
+}
 
     // Filtrar usuarios por grupo si se selecciona uno específico
     if ($grupo !== 'TOT') {
@@ -95,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                             <option value="ext" <?= $grupo === "ext" ? "selected" : "" ?>>EXT</option>
                         </select>
 
-                        <input type="text" name="buscar" placeholder="Buscar usuari..." value="<?php echo $_POST['buscar'] ?? ''; ?>" class="form-control">
+                        <input type="text" name="buscar" placeholder="Buscar usuario o DNI..." value="<?php echo $_POST['buscar'] ?? ''; ?>" class="form-control">
                         <button class="btn btn-primary" type="submit">Buscar</button>
                     </div>
                 </form>
