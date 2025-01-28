@@ -14,7 +14,7 @@ $grupo = "TOT";
 $resultado = null;
 $mensaje = "";
 $usuariosRelacionados = []; // Aquí almacenaremos los usuarios relacionados
-
+$query = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
     $busqueda = mysqli_real_escape_string($conn, trim($_POST['buscar'])); // Escapar entrada del usuario
     $grupo = isset($_POST['grupo']) ? mysqli_real_escape_string($conn, $_POST['grupo']) : 'TOT';
@@ -221,7 +221,7 @@ if (is_numeric($busqueda)) {
                 <h2>Grups EPSEVG</h2>
 
                 <ul class="columnas">
-                    <li><h5>No hi ha registres</h5></li>
+                    <!--<li><h5>No hi ha registres</h5></li> -->
                 </ul>
 
             </div>
