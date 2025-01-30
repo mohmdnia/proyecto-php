@@ -13,18 +13,47 @@ $busqueda = "";
 $grupo = "TOT";
 $resultado = null;
 $mensaje = "";
-$usuariosRelacionados = []; // Aquí almacenaremos los usuarios relacionados
+$usuariosRelacionados = []; // Aqui almacenaremos los usuarios relacionados
 $query = null;
+
+// Mensajes para grupos
+$idGrupo = 2;
+
+// Consultar el nombre del grupo
+$sqlGrupo = "SELECT nom FROM 340_personal_grups WHERE id = $idGrupo";
+$queryGrupo = mysqli_query($conn, $sqlGrupo);
+$grupoNombre = ($queryGrupo && mysqli_num_rows($queryGrupo) > 0) ? mysqli_fetch_assoc($queryGrupo)['nom'] : 'Desconocido';
+
+// Obtener la cantidad de personas en el grupo y sus nombres
+$sqlPersonas = "
+    SELECT p.nom, p.cognoms, e.perfil 
+    FROM 340_personal AS p
+    INNER JOIN 340_personal_grups_pertany AS pgp ON p.dni = pgp.dni
+    LEFT JOIN 340_personal_epsevg AS e ON p.dni = e.dni
+    WHERE pgp.idgrup = $idGrupo
+";
+
+$queryPersonas = mysqli_query($conn, $sqlPersonas);
+$personas = [];
+if ($queryPersonas && mysqli_num_rows($queryPersonas) > 0) {
+    while ($row = mysqli_fetch_assoc($queryPersonas)) {
+        $personas[] = $row;
+    }
+}
+$cantidadPersonas = count($personas);
+
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
-    $busqueda = mysqli_real_escape_string($conn, trim($_POST['buscar'])); // Escapar entrada del usuario
+    $busqueda = mysqli_real_escape_string($conn, trim($_POST['buscar'])); 
     $grupo = isset($_POST['grupo']) ? mysqli_real_escape_string($conn, $_POST['grupo']) : 'TOT';
 
-    // Dividir la búsqueda en nombre y apellido (si hay un espacio)
+    // Dividir la búsqueda en nombre y apellido
     $partes = explode(' ', $busqueda, 2); 
     $nom = $partes[0];
     $cognoms = isset($partes[1]) ? $partes[1] : '';
 
-    // Consulta SQL con JOIN para obtener datos de ambas tablas
+
 // Comprobar si la búsqueda es un número (posible DNI)
 if (is_numeric($busqueda)) {
     // Si es un número, la búsqueda es por DNI
@@ -41,7 +70,6 @@ if (is_numeric($busqueda)) {
         WHERE p.dni LIKE '%$busqueda%'"; // Buscar por DNI
 } else {
     // Si no es un número, la búsqueda es por nombre y apellido
-    // Dividir la búsqueda en nombre y apellido (si hay un espacio)
     $partes = explode(' ', $busqueda, 2); 
     $nom = $partes[0];
     $cognoms = isset($partes[1]) ? $partes[1] : '';
@@ -56,7 +84,7 @@ if (is_numeric($busqueda)) {
         LEFT JOIN 340_personal_epsevg AS e ON p.dni = e.dni
         LEFT JOIN 340_personal_categories AS c ON e.categoria = c.id
         LEFT JOIN 340_personal_titulacions AS t ON e.titulacio = t.id
-        WHERE p.nom LIKE '%$nom%' AND p.cognoms LIKE '%$cognoms%'"; // Buscar por nombre y apellido
+        WHERE p.nom LIKE '%$nom%' AND p.cognoms LIKE '%$cognoms%'";
 }
 
     // Filtrar usuarios por grupo si se selecciona uno específico
@@ -107,6 +135,7 @@ if (is_numeric($busqueda)) {
             <div class="busqueda">
                 <form action="index.php" method="POST">
                     <div class="input-group mb-1">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
                         <select class="form-select" name="grupo" style="max-width: 150px;">
                             <option value="TOT" <?= $grupo === "TOT" ? "selected" : "" ?>>TOT</option>
                             <option value="pdi" <?= $grupo === "pdi" ? "selected" : "" ?>>PDI</option>
@@ -115,8 +144,7 @@ if (is_numeric($busqueda)) {
                             <option value="bec" <?= $grupo === "bec" ? "selected" : "" ?>>BEC</option>
                             <option value="ext" <?= $grupo === "ext" ? "selected" : "" ?>>EXT</option>
                         </select>
-
-                        <input type="text" name="buscar" placeholder="Buscar usuario o DNI..." value="<?php echo $_POST['buscar'] ?? ''; ?>" class="form-control">
+                        <input type="text" name="buscar" placeholder="Buscar usuario o DNI..." value="<?= htmlspecialchars($_POST['buscar'] ?? '') ?>" class="form-control">
                         <button class="btn btn-primary" type="submit">Buscar</button>
                     </div>
                 </form>
@@ -127,16 +155,19 @@ if (is_numeric($busqueda)) {
                 <?php if ($query && mysqli_num_rows($query) > 0): ?>
                     <?php while ($row = mysqli_fetch_assoc($query)): ?>
                         <div class="resultado-item">
-                            <!-- Etiqueta del grupo -->
                             <span class="badge badge-<?= htmlspecialchars($row['perfil']); ?>">
                                 <?= htmlspecialchars($row['perfil']); ?>
                             </span>
-                            <!-- Nombre del usuario -->
                             <span>
                                 <?= htmlspecialchars($row['nom']) . ' ' . htmlspecialchars($row['cognoms']); ?>
                             </span>
                         </div>
                     <?php endwhile; ?>
+                <?php else: ?>
+                    <div class="mensaje-busqueda">
+                        <h5>🔍 No s'han trobat resultats</h5>
+                        <h7>Intenta-ho amb un altre nom o DNI</h7>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
@@ -167,7 +198,7 @@ if (is_numeric($busqueda)) {
                 </div>
             </div>
 
-                                <!-- Datos personales -->
+            <!-- Datos personales -->
             <div class="section">
                 <h2>Dades personals</h2>
                 
@@ -218,13 +249,31 @@ if (is_numeric($busqueda)) {
 
             <!-- Grupos de usuario -->
             <div class="section">
-                <h2>Grups EPSEVG</h2>
-
-                <ul class="columnas">
-                    <!--<li><h5>No hi ha registres</h5></li> -->
-                </ul>
-
+            <h2>Grups EPSEVG</h2>
+            <div class="grupo-info">
+                <h3>Grup: <?= htmlspecialchars($grupoNombre); ?></h3>
+                <p>Quantitat de persones: <strong><?= $cantidadPersonas; ?></strong></p>
             </div>
+
+            <?php if ($cantidadPersonas > 0): ?>
+                <div class="row">
+                    <?php foreach ($personas as $persona): ?>
+                        <div class="col-md-4 mb-4">
+                            <div class="persona-card border p-3 rounded shadow-sm">
+                                <span class="badge badge-<?= isset($persona['perfil']) ? htmlspecialchars($persona['perfil']) : 'default'; ?>">
+                                    <?= isset($persona['perfil']) ? htmlspecialchars($persona['perfil']) : 'No definido'; ?>
+                                </span>
+                                <span>
+                                    <?= isset($persona['nom']) && isset($persona['cognoms']) ? htmlspecialchars($persona['nom']) . ' ' . htmlspecialchars($persona['cognoms']) : 'Nombre no disponible'; ?>
+                                </span>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <p>No hay personas en este grupo.</p>
+            <?php endif; ?>
+        </div>
 
             <!-- Usuarios relacionados -->
             <div class="section">
@@ -244,13 +293,12 @@ if (is_numeric($busqueda)) {
                             </li>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <li>No hi ha usuaris relacionts per departament.</li>
+                        <h5><?= htmlspecialchars($mensaje); ?></h5>
                     <?php endif; ?>
                 </ul>
             </div>
-
         </div>
-    </div>
 
+    </div>
 </body>
 </html>

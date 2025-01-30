@@ -35,7 +35,7 @@ if (isset($_GET['dni'])) {
     $_SESSION['message_type'] = 'warning';
 }
 
-// Redirigir al índice (o a la página que deseas después de la eliminación)
+// Redirigir al índice 
 header("Location: index.php");
 exit();
 ?>

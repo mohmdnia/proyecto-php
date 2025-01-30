@@ -3,7 +3,6 @@ include_once "../modelo/database.php";
 include_once "header.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Conexión a la base de datos
     global $conn;
 
     // Obtener el motivo del cambio
@@ -39,13 +38,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $new_data_epsevg['cip'] = $_POST['cip'];
         $new_data_epsevg['telf1'] = $_POST['telf1'];
         $new_data_epsevg['numero_expedient'] = $_POST['numero_expedient'];
-        $new_data_epsevg['incid'] = $_POST['incid'] ?? null; // Manejar campo incid
+        $new_data_epsevg['incid'] = $_POST['incid'] ?? null;
         $new_data_epsevg['categoria'] = $_POST['categoria'];
         $new_data_epsevg['dedicacio'] = $_POST['dedicacio'];
         $new_data_epsevg['departament'] = $_POST['departament'];
         $new_data_epsevg['tasca'] = $_POST['tasca'];
         $new_data_epsevg['unitat_estructural'] = $_POST['unitat_estructural'];
-        $new_data_epsevg['tipus_associat'] = $_POST['tipus_associat'] ?? null; // Manejar campo tipus_asociat
+        $new_data_epsevg['tipus_associat'] = $_POST['tipus_associat'] ?? null;
         $new_data_epsevg['titulacio'] = $_POST['titulacio'];
         $new_data_epsevg['despatx'] = $_POST['despatx'];
         $new_data_epsevg['perfil'] = $_POST['perfil'];
@@ -65,8 +64,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Comparar datos y registrar cambios
     function log_changes($conn, $dni, $field, $old_value, $new_value, $observacions) {
-        $old_value = $old_value ?? ''; // Asignar valor vacío si es NULL
-        $new_value = $new_value ?? ''; // Asignar valor vacío si es NULL
+        $old_value = $old_value ?? '';
+        $new_value = $new_value ?? ''; 
 
         $sql = "INSERT INTO 340_personal_historic (dni, camp_canviat, valor_antic, valor_nou, observacions, data_efectiva) 
                 VALUES (?, ?, ?, ?, ?, NOW())";
