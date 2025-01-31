@@ -24,14 +24,19 @@ $sqlGrupo = "SELECT nom FROM 340_personal_grups WHERE id = $idGrupo";
 $queryGrupo = mysqli_query($conn, $sqlGrupo);
 $grupoNombre = ($queryGrupo && mysqli_num_rows($queryGrupo) > 0) ? mysqli_fetch_assoc($queryGrupo)['nom'] : 'Desconocido';
 
-// Obtener la cantidad de personas en el grupo y sus nombres
+// Consulta para obtener las personas del grupo
 $sqlPersonas = "
     SELECT p.nom, p.cognoms, e.perfil 
     FROM 340_personal AS p
     INNER JOIN 340_personal_grups_pertany AS pgp ON p.dni = pgp.dni
+    INNER JOIN 340_personal_grups AS g ON pgp.idgrup = g.id
     LEFT JOIN 340_personal_epsevg AS e ON p.dni = e.dni
-    WHERE pgp.idgrup = $idGrupo
-";
+    WHERE g.nom = 'cap de seccio'"; 
+
+// Filtrar por perfil si no es 'TOT'
+if ($grupo !== 'TOT') {
+    $sqlPersonas .= " AND e.perfil = '$grupo'";
+}
 
 $queryPersonas = mysqli_query($conn, $sqlPersonas);
 $personas = [];
@@ -41,6 +46,7 @@ if ($queryPersonas && mysqli_num_rows($queryPersonas) > 0) {
     }
 }
 $cantidadPersonas = count($personas);
+
 
 
 
@@ -248,55 +254,59 @@ if (is_numeric($busqueda)) {
             </div>
 
             <!-- Grupos de usuario -->
-            <div class="section">
-            <h2>Grups EPSEVG</h2>
-            <div class="grupo-info">
-                <h3>Grup: <?= htmlspecialchars($grupoNombre); ?></h3>
-                <p>Quantitat de persones: <strong><?= $cantidadPersonas; ?></strong></p>
-            </div>
-
             <?php if ($cantidadPersonas > 0): ?>
-                <div class="row">
-                    <?php foreach ($personas as $persona): ?>
-                        <div class="col-md-4 mb-4">
-                            <div class="persona-card border p-3 rounded shadow-sm">
-                                <span class="badge badge-<?= isset($persona['perfil']) ? htmlspecialchars($persona['perfil']) : 'default'; ?>">
-                                    <?= isset($persona['perfil']) ? htmlspecialchars($persona['perfil']) : 'No definido'; ?>
-                                </span>
-                                <span>
-                                    <?= isset($persona['nom']) && isset($persona['cognoms']) ? htmlspecialchars($persona['nom']) . ' ' . htmlspecialchars($persona['cognoms']) : 'Nombre no disponible'; ?>
-                                </span>
+                <div class="section">
+                    <h2>Grups EPSEVG</h2>
+                    <div class="grupo-info">
+                        <h3>Grup: <?= htmlspecialchars($grupoNombre); ?></h3>
+                        <p>Quantitat de persones: <strong><?= $cantidadPersonas; ?></strong></p>
+                    </div>
+                    <div class="row">
+                        <?php foreach ($personas as $persona): ?>
+                            <div class="col-md-4 mb-4">
+                                <div class="persona-card border p-3 rounded shadow-sm">
+                                    <span class="badge badge-<?= isset($persona['perfil']) ? htmlspecialchars($persona['perfil']) : 'default'; ?>">
+                                        <?= isset($persona['perfil']) ? htmlspecialchars($persona['perfil']) : 'No definido'; ?>
+                                    </span>
+                                    <span>
+                                        <?= isset($persona['nom']) && isset($persona['cognoms']) ? htmlspecialchars($persona['nom']) . ' ' . htmlspecialchars($persona['cognoms']) : 'Nombre no disponible'; ?>
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
                 </div>
             <?php else: ?>
                 <p>No hay personas en este grupo.</p>
             <?php endif; ?>
+        
         </div>
 
             <!-- Usuarios relacionados -->
-            <div class="section">
-                <h2>Usuarios relacionados</h2>
-                <ul class="columnas">
-                    <?php if (!empty($usuariosRelacionados)): ?>
-                        <li><strong>Hay <?= count($usuariosRelacionados); ?> usuarios relacionados por departamento:</strong></li>
+            <?php if (!empty($usuariosRelacionados)): ?>
+                <div class="section">
+                    <h2>Usuaris relacionats</h2>
+                    <p><strong>Hi ha <?= count($usuariosRelacionados); ?> usuaris relacionats per departament:</strong></p>
+                    <div class="row">
                         <?php foreach ($usuariosRelacionados as $usuario): ?>
-                            <li>
-                                <!-- Verificar que los valores existan antes de mostrarlos -->
-                                <span class="badge badge-<?= isset($usuario['perfil']) ? htmlspecialchars($usuario['perfil']) : 'default'; ?>">
-                                    <?= isset($usuario['perfil']) ? htmlspecialchars($usuario['perfil']) : 'No definido'; ?>
-                                </span>
-                                <span>
-                                    <?= isset($usuario['nom']) && isset($usuario['cognoms']) ? htmlspecialchars($usuario['nom']) . ' ' . htmlspecialchars($usuario['cognoms']) : 'Nombre no disponible'; ?>
-                                </span>
-                            </li>
+                            <div class="col-md-4 mb-4">
+                                <div class="persona-card border p-3 rounded shadow-sm">
+                                    <span class="badge badge-<?= isset($usuario['perfil']) ? htmlspecialchars($usuario['perfil']) : 'default'; ?>">
+                                        <?= isset($usuario['perfil']) ? htmlspecialchars($usuario['perfil']) : 'No definido'; ?>
+                                    </span>
+                                    <span>
+                                        <?= isset($usuario['nom']) && isset($usuario['cognoms']) ? htmlspecialchars($usuario['nom']) . ' ' . htmlspecialchars($usuario['cognoms']) : 'Nombre no disponible'; ?>
+                                    </span>
+                                </div>
+                            </div>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <h5><?= htmlspecialchars($mensaje); ?></h5>
-                    <?php endif; ?>
-                </ul>
-            </div>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="section">
+                    <h2>Usuaris relacionats</h2>
+                    <p><strong><?= htmlspecialchars($mensaje); ?></strong></p>
+                </div>
+            <?php endif; ?>
         </div>
 
     </div>
